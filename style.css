@@ -187,7 +187,7 @@ html, body {
   color: #94a3b8;
 }
 
-/* === ВЕРХНЯ ПАНЕЛЬ (HUD) — НУЛЬ НАКЛАДАНЬ === */
+/* === ВЕРХНЯ ПАНЕЛЬ (HUD) === */
 .top-bar {
   position: fixed;
   top: max(8px, env(safe-area-inset-top));
@@ -269,7 +269,7 @@ html, body {
   color: #ffd500;
 }
 
-/* === СПЛИВАЮЧІ ВІКНА (КОЛІР / КАМЕРА / СТУДІЯ) === */
+/* === СПЛИВАЮЧІ ВІКНА === */
 .floating-popover {
   position: fixed;
   top: calc(max(8px, env(safe-area-inset-top)) + 52px);
@@ -392,24 +392,31 @@ html, body {
 .studio-btn.active { background: #ffd500; color: #111; }
 .studio-btn.danger { background: #7f1d1d; border-color: #ef4444; }
 
-/* === ПАНЕЛЬ РЕЖИМІВ ТА ПЕРЕМІЩЕННЯ (MODE DOCK) === */
+/* === ПАНЕЛЬ РЕЖИМІВ ТА ПЕРЕМІЩЕННЯ === */
 .mode-dock {
   position: fixed;
   top: calc(max(8px, env(safe-area-inset-top)) + 52px);
   left: 8px;
+  right: 8px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 6px;
   z-index: 25;
-  max-width: calc(100vw - 16px);
+  pointer-events: none;
+}
+
+.mode-pills, .move-subbar {
+  pointer-events: auto;
+  max-width: 100%;
 }
 
 .mode-pills {
   display: flex;
-  gap: 4px;
-  background: rgba(15, 23, 42, 0.9);
+  gap: 3px;
+  background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   border-radius: 12px;
   padding: 4px;
   overflow-x: auto;
@@ -422,8 +429,8 @@ html, body {
   color: #e2e8f0;
   border: none;
   border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.8rem;
+  padding: 6px 9px;
+  font-size: 0.78rem;
   font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
@@ -452,8 +459,8 @@ html, body {
   color: #fff;
   border: 1px solid #475569;
   border-radius: 8px;
-  padding: 5px 9px;
-  font-size: 0.78rem;
+  padding: 5px 8px;
+  font-size: 0.75rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -470,9 +477,9 @@ html, body {
   background: #2b3e5e;
   border: 1px solid #64748b;
   border-radius: 6px;
-  width: 28px;
-  height: 28px;
-  font-size: 0.85rem;
+  width: 27px;
+  height: 27px;
+  font-size: 0.82rem;
   cursor: pointer;
 }
 .nudge-btn:active { background: #ffd500; }
@@ -490,7 +497,6 @@ html, body {
   padding: 8px 10px;
   z-index: 25;
   box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.55);
-  transition: transform 0.25s ease;
 }
 
 .parts-banner.collapsed .subfilter-bar,
@@ -615,8 +621,8 @@ html, body {
 .banner-items::-webkit-scrollbar-thumb { background: #ffd500; border-radius: 4px; }
 
 .part-card {
-  min-width: 108px;
-  max-width: 108px;
+  min-width: 104px;
+  max-width: 104px;
   background: linear-gradient(180deg, #23334d, #172234);
   border: 2px solid #3d547a;
   border-radius: 11px;
@@ -667,7 +673,7 @@ html, body {
   background: #ffd500;
   color: #111;
   font-weight: 900;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   padding: 6px 14px;
   border-radius: 999px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
@@ -679,11 +685,11 @@ html, body {
   text-overflow: ellipsis;
 }
 
-/* === АДАПТАЦІЯ ДЛЯ МАЛИХ ЕКРАНІВ === */
+/* === АДАПТАЦІЯ ДЛЯ ВУЗЬКИХ ЕКРАНІВ СМАРТФОНІВ === */
 @media (max-width: 640px) {
   .brand-text { display: none; }
   .hide-xs { display: none; }
   .logo-bottom { font-size: 2rem; }
-  .mode-btn { padding: 6px 8px; font-size: 0.76rem; }
-  .part-card { min-width: 96px; max-width: 96px; }
+  .mode-btn { padding: 5px 6px; font-size: 0.71rem; }
+  .part-card { min-width: 94px; max-width: 94px; }
 }
