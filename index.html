@@ -22,48 +22,36 @@
         <span class="logo-top">ДЕНИС ГАНДЗЮК</span>
         <span class="logo-bottom">LEGO</span>
       </div>
-      <p class="menu-subtitle">Студійний 3D-конструктор • 132+ мініфігурок • Пластина до 64×64 • LDraw</p>
+      <p class="menu-subtitle">3D-конструктор • 100 Машин • 100 Будинків • 132 Фігурки • Пластина 64×64</p>
 
       <div class="menu-section">
-        <label class="menu-label">Розмір базової пластини:</label>
+        <label class="menu-label">Розмір робочої пластини:</label>
         <div class="plate-size-selector">
           <button class="size-btn" data-size="16">16 × 16</button>
-          <button class="size-btn active" data-size="24">24 × 24</button>
-          <button class="size-btn" data-size="32">32 × 32</button>
+          <button class="size-btn" data-size="24">24 × 24</button>
+          <button class="size-btn active" data-size="32">32 × 32</button>
           <button class="size-btn mega-size" data-size="64">64 × 64 🔥</button>
         </div>
       </div>
 
       <div class="menu-buttons">
         <button id="btn-start-sandbox" class="lego-btn btn-green">
-          🧱 ВІЛЬНЕ БУДІВНИЦТВО (ПІСОЧНИЦЯ)
+          🧱 ПОЧАТИ БУДІВНИЦТВО (ВІЛЬНИЙ РЕЖИМ)
         </button>
-        <button id="btn-open-blueprints" class="lego-btn btn-yellow">
-          🏰 ГОТОВІ МАКЕТИ ТА НАБОРИ
+        <button id="btn-start-city" class="lego-btn btn-yellow">
+          🌆 СТАРТОВЕ МЕГА-МІСТО 64×64
         </button>
         <button id="btn-open-ldraw" class="lego-btn btn-blue">
-          🌐 ВІДКРИТА БАЗА LDRAW (ІМПОРТ .LDR / .MPD)
+          🌐 ІМПОРТ З ВІДКРИТОЇ БАЗИ LDRAW (.LDR / .MPD)
         </button>
-      </div>
-
-      <!-- ПІДМЕНЮ ГОТОВИХ МАКЕТІВ -->
-      <div id="blueprints-panel" class="sub-panel hidden">
-        <h3>Обери макет для автоматичної 3D-збірки:</h3>
-        <div class="blueprint-grid">
-          <button class="bp-card" data-bp="house">🏠 Затишний Будинок</button>
-          <button class="bp-card" data-bp="car">🏎️ Гоночний Спорткар</button>
-          <button class="bp-card" data-bp="castle">🏰 Вежа Замку з Лицарем</button>
-          <button class="bp-card" data-bp="rocket">🚀 Космічна Ракета</button>
-          <button class="bp-card bp-wide" data-bp="megacity">🌆 МЕГА-МІСТО LEGO (Автоматично 64×64)</button>
-        </div>
       </div>
 
       <!-- ПІДМЕНЮ LDRAW -->
       <div id="ldraw-panel" class="sub-panel hidden">
-        <h3>Моделі з відкритих джерел (LDraw Open Library):</h3>
+        <h3>Відкрита бібліотека моделей LDraw:</h3>
         <div class="blueprint-grid">
           <button class="ldraw-remote-btn" data-url="https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/models/car.ldr_Packed.mpd">
-            🚗 Класичне Авто (LDraw)
+            🚗 Класичне Авто
           </button>
           <button class="ldraw-remote-btn" data-url="https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/models/889-1-RadarTruck.mpd_Packed.mpd">
             📡 Радарна Вантажівка
@@ -79,99 +67,133 @@
       </div>
 
       <div class="controls-hint">
-        <span><b>Клік / Тап</b> — поставити блок</span>
-        <span><b>Тягнути мишею / пальцем</b> — крутити на 360°</span>
-        <span><b>ПКМ</b> — видалити</span>
-        <span><b>R</b> — поворот 90°</span>
+        <span><b>🧱 Будувати</b> — ставити блоки</span>
+        <span><b>✋ Рухати</b> — тягнути машини, будинки й деталі</span>
+        <span><b>360°</b> — тягни вільне місце</span>
       </div>
     </div>
   </div>
 
-  <!-- ІГРОВИЙ ІНТЕРФЕЙС -->
+  <!-- ІГРОВИЙ ІНТЕРФЕЙС (HUD) -->
   <div id="hud" class="hidden">
-    <!-- ВЕРХНЯ ПАНЕЛЬ -->
+    <!-- КОМПАКТНА ВЕРХНЯ ПАНЕЛЬ -->
     <header class="top-bar">
-      <div class="brand-badge">
-        <button id="btn-back-menu" class="icon-btn" title="Головне меню">☰</button>
-        <span class="mini-title">ДЕНИС ГАНДЗЮК <b>LEGO</b></span>
+      <div class="top-left">
+        <button id="btn-back-menu" class="hud-chip chip-red" title="Головне меню">☰</button>
+        <span class="brand-text">ДЕНИС ГАНДЗЮК <b>LEGO</b></span>
+        <span class="counter-chip">🧱 <b id="brick-counter">0</b></span>
       </div>
 
-      <div class="tool-actions">
-        <button id="tool-build" class="tool-btn active" title="Будувати">🧱 <span class="btn-txt">Будувати</span></button>
-        <button id="tool-paint" class="tool-btn" title="Фарбувати">🎨 <span class="btn-txt">Фарба</span></button>
-        <button id="tool-delete" class="tool-btn" title="Видалити">🔨 <span class="btn-txt">Видалити</span></button>
-        <button id="btn-rotate" class="tool-btn" title="Поворот 90° (R)">🔄 <span class="btn-txt">Поворот</span></button>
-        <button id="btn-undo" class="tool-btn" title="Назад (Ctrl+Z)">↩️</button>
-        <button id="btn-explode" class="tool-btn" title="Вибух-схема споруди">💥 <span class="btn-txt">Схема</span></button>
-        <button id="btn-lighting" class="tool-btn" title="Змінити освітлення">☀️ <span class="btn-txt">День</span></button>
-        <button id="btn-photo" class="tool-btn" title="Зробити фото моделі">📸</button>
-        <button id="btn-save" class="tool-btn success" title="Зберегти JSON">💾</button>
-        <label class="tool-btn" title="Відкрити JSON">
-          📂
-          <input type="file" id="json-load-input" accept=".json" hidden />
-        </label>
-        <button id="btn-clear" class="tool-btn danger" title="Очистити все">🗑️</button>
-      </div>
-
-      <div class="stats-badge">
-        🧱 <span id="brick-counter">0</span>
+      <div class="top-right">
+        <button id="toggle-colors-btn" class="hud-chip active-indicator" title="Палітра кольорів">
+          <span class="current-color-dot" id="current-color-dot"></span>
+          <span class="hide-xs">Колір</span>
+        </button>
+        <button id="toggle-camera-btn" class="hud-chip" title="Огляд 360° з усіх сторін">
+          🎥 <span class="hide-xs">Огляд</span>
+        </button>
+        <button id="toggle-studio-btn" class="hud-chip" title="Інструменти студії">
+          ⚙️ <span class="hide-xs">Студія</span>
+        </button>
       </div>
     </header>
 
-    <!-- ПАНЕЛЬ ОГЛЯДУ 360° (КАМЕРА З РІЗНИХ СТОРІН) -->
-    <aside class="camera-gizmo">
-      <div class="gizmo-title">🎥 ОГЛЯД 360°</div>
-      <div class="gizmo-grid">
-        <button class="cam-btn" data-view="front" title="Вигляд спереду">Спереду</button>
-        <button class="cam-btn" data-view="back" title="Вигляд ззаду">Ззаду</button>
-        <button class="cam-btn" data-view="left" title="Вигляд зліва">Зліва</button>
-        <button class="cam-btn" data-view="right" title="Вигляд справа">Справа</button>
-        <button class="cam-btn" data-view="top" title="Вигляд зверху">Зверху</button>
-        <button class="cam-btn" data-view="iso" title="3D Ізометрія">3D Вид</button>
+    <!-- СПЛИВАЮЧЕ ВІКНО 1: ПАЛІТРА КОЛЬОРІВ -->
+    <div id="popover-colors" class="floating-popover popover-colors hidden">
+      <div class="popover-header">
+        <span>🎨 Колір деталі</span>
+        <button class="close-pop-btn" data-close="popover-colors">✕</button>
       </div>
-      <button id="btn-auto-orbit" class="orbit-toggle-btn">🔄 Обліт 360°</button>
-    </aside>
-
-    <!-- ПАЛІТРА КОЛЬОРІВ LEGO -->
-    <aside class="color-palette" id="color-palette"></aside>
-
-    <!-- МОБІЛЬНА ПАНЕЛЬ ШВИДКОЇ ДІЇ (ДЛЯ СМАРТФОНІВ) -->
-    <div class="mobile-action-dock">
-      <button id="mob-rotate" class="mob-pill">🔄 90°</button>
-      <button id="mob-place" class="mob-pill mob-confirm">✅ ПОСТАВИТИ</button>
-      <button id="mob-toggle-banner" class="mob-pill mob-drawer-btn">🔽 Деталі</button>
+      <div class="color-grid" id="color-palette"></div>
     </div>
 
-    <!-- НИЖНІЙ ІНТЕРАКТИВНИЙ БАНЕР БЛОКІВ ТА 132+ ФІГУРОК -->
+    <!-- СПЛИВАЮЧЕ ВІКНО 2: КАМЕРА 360° -->
+    <div id="popover-camera" class="floating-popover popover-camera hidden">
+      <div class="popover-header">
+        <span>🎥 Огляд 360°</span>
+        <button class="close-pop-btn" data-close="popover-camera">✕</button>
+      </div>
+      <div class="cam-grid">
+        <button class="cam-btn" data-view="front">Спереду</button>
+        <button class="cam-btn" data-view="back">Ззаду</button>
+        <button class="cam-btn" data-view="left">Зліва</button>
+        <button class="cam-btn" data-view="right">Справа</button>
+        <button class="cam-btn" data-view="top">Зверху</button>
+        <button class="cam-btn" data-view="iso">3D Вид</button>
+      </div>
+      <button id="btn-auto-orbit" class="full-pop-btn">🔄 Авто-обліт 360°</button>
+    </div>
+
+    <!-- СПЛИВАЮЧЕ ВІКНО 3: СТУДІЯ ТА ЗБЕРЕЖЕННЯ -->
+    <div id="popover-studio" class="floating-popover popover-studio hidden">
+      <div class="popover-header">
+        <span>⚙️ Студія та Файли</span>
+        <button class="close-pop-btn" data-close="popover-studio">✕</button>
+      </div>
+      <div class="studio-grid">
+        <button id="btn-lighting" class="studio-btn">☀️ Освітлення: День</button>
+        <button id="btn-explode" class="studio-btn">💥 Вибух-схема</button>
+        <button id="btn-photo" class="studio-btn">📸 Фото моделі (PNG)</button>
+        <button id="btn-save" class="studio-btn">💾 Зберегти (JSON)</button>
+        <label class="studio-btn">
+          📂 Відкрити (JSON)
+          <input type="file" id="json-load-input" accept=".json" hidden />
+        </label>
+        <button id="btn-clear" class="studio-btn danger">🗑️ Очистити поле</button>
+      </div>
+    </div>
+
+    <!-- ПАНЕЛЬ РЕЖИМІВ ТА ВІЛЬНОГО ПЕРЕСУВАННЯ -->
+    <div class="mode-dock" id="mode-dock">
+      <div class="mode-pills">
+        <button id="tool-build" class="mode-btn active">🧱 Будувати</button>
+        <button id="tool-move" class="mode-btn">✋ Рухати</button>
+        <button id="tool-paint" class="mode-btn">🎨 Фарба</button>
+        <button id="tool-delete" class="mode-btn">🔨 Видалити</button>
+        <button id="btn-rotate" class="mode-btn" title="Поворот 90° (R)">🔄 90°</button>
+        <button id="btn-undo" class="mode-btn" title="Скасувати (Ctrl+Z)">↩️</button>
+      </div>
+
+      <!-- ПІДПАНЕЛЬ ПЕРЕМІЩЕННЯ ОБ'ЄКТА / ДЕТАЛІ -->
+      <div id="move-subbar" class="move-subbar hidden">
+        <button id="btn-move-scope" class="scope-btn" title="Перемикач: рухати весь об'єкт чи одну деталь">
+          🏠 Весь об'єкт
+        </button>
+        <div class="nudge-pad">
+          <button class="nudge-btn" data-dx="0" data-dz="-1" title="Вперед">⬆️</button>
+          <button class="nudge-btn" data-dx="0" data-dz="1" title="Назад">⬇️</button>
+          <button class="nudge-btn" data-dx="-1" data-dz="0" title="Вліво">⬅️</button>
+          <button class="nudge-btn" data-dx="1" data-dz="0" title="Вправо">➡️</button>
+        </div>
+        <button id="btn-clone-selected" class="scope-btn clone-btn" title="Створити копію вибраного">📋 Копія</button>
+        <button id="btn-deselect" class="scope-btn done-btn" title="Зафіксувати">✅</button>
+      </div>
+    </div>
+
+    <!-- НИЖНІЙ ІНТЕРАКТИВНИЙ БАНЕР: БЛОКИ, 100 МАШИН, 100 БУДИНКІВ, 132 ФІГУРКИ, НАБОРИ -->
     <section class="parts-banner" id="parts-banner">
-      <div class="banner-header">
+      <div class="banner-top-row">
         <div class="category-tabs" id="category-tabs">
-          <button class="cat-tab active" data-cat="bricks">🧱 Кубики</button>
-          <button class="cat-tab" data-cat="plates">📏 Пластини</button>
-          <button class="cat-tab" data-cat="slopes">📐 Скоси/Дахи</button>
-          <button class="cat-tab" data-cat="details">⚙️ Вікна/Колеса</button>
-          <button class="cat-tab minifig-tab" data-cat="minifigs">🧍 Фігурки (132)</button>
+          <button class="cat-tab active" data-cat="bricks">🧱 Блоки</button>
+          <button class="cat-tab" data-cat="cars">🏎️ Машини (100)</button>
+          <button class="cat-tab" data-cat="houses">🏠 Будинки (100)</button>
+          <button class="cat-tab" data-cat="sets">🚁 Ще набори (32)</button>
+          <button class="cat-tab" data-cat="minifigs">🧍 Фігурки (132)</button>
         </div>
 
-        <div class="banner-controls">
-          <input type="text" id="part-search" placeholder="🔍 Пошук (напр. Ніндзя, Лицар, 2×4)..." />
-          <button id="btn-spawn-center" class="spawn-now-btn" title="Заспавнити у центрі">
-            ⚡ СПАВН
-          </button>
-        </div>
+        <button id="btn-collapse-banner" class="collapse-btn" title="Згорнути / Розгорнути панель">🔽</button>
       </div>
 
-      <!-- ФІЛЬТР КОЛЕКЦІЙ МІНІФІГУРОК -->
-      <div class="minifig-subtabs hidden" id="minifig-subtabs">
-        <button class="mf-filter active" data-mf="all">Усі (132)</button>
-        <button class="mf-filter" data-mf="city">🏙️ Місто</button>
-        <button class="mf-filter" data-mf="space">🚀 Космос</button>
-        <button class="mf-filter" data-mf="castle">🏰 Лицарі</button>
-        <button class="mf-filter" data-mf="ninja">🥷 Ніндзя</button>
-        <button class="mf-filter" data-mf="pirate">🏴‍☠️ Пірати</button>
-        <button class="mf-filter" data-mf="hero">⚡ Герої</button>
+      <!-- ПІДФІЛЬТРИ ДЛЯ АКТИВНОЇ КАТЕГОРІЇ -->
+      <div class="subfilter-bar" id="subfilter-bar"></div>
+
+      <!-- ПОШУК ТА КНОПКА СПАВНУ -->
+      <div class="banner-search-row">
+        <input type="text" id="part-search" placeholder="🔍 Пошук за назвою або номером..." />
+        <button id="btn-spawn-center" class="spawn-now-btn">⚡ СПАВН НА ПОЛЕ</button>
       </div>
 
+      <!-- СТРІЧКА КАРТОК -->
       <div class="banner-items" id="banner-items"></div>
     </section>
 
