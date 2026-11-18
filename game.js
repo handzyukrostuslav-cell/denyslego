@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { LDrawLoader } from 'three/addons/loaders/LDrawLoader.js';
 
 // ==========================================
-// 1. КОНСТАНТИ, КОЛЬОРИ ТА КАТАЛОГ ДЕТАЛЕЙ
+// 1. КОНСТАНТИ ТА ПАЛІТРА КОЛЬОРІВ LEGO
 // ==========================================
 const STUD_SIZE = 1.0;
 const PLATE_HEIGHT = 0.4;
@@ -31,57 +31,55 @@ const LEGO_COLORS = [
   { name: 'Неоновий вогонь', hex: '#FF5500', transparent: true, glow: true }
 ];
 
+// ==========================================
+// 2. БАЗОВІ ДЕТАЛІ LEGO (КУБИКИ, ПЛАСТИНИ, СКОСИ, ВІКНА)
+// ==========================================
 const BASE_PARTS = [
-  // КУБИКИ
-  { id: 'b_1x1', name: 'Кубик 1×1', cat: 'bricks', w: 1, d: 1, hPlates: 3, shape: 'brick' },
-  { id: 'b_1x2', name: 'Кубик 1×2', cat: 'bricks', w: 1, d: 2, hPlates: 3, shape: 'brick' },
-  { id: 'b_1x3', name: 'Кубик 1×3', cat: 'bricks', w: 1, d: 3, hPlates: 3, shape: 'brick' },
-  { id: 'b_1x4', name: 'Кубик 1×4', cat: 'bricks', w: 1, d: 4, hPlates: 3, shape: 'brick' },
-  { id: 'b_1x6', name: 'Кубик 1×6', cat: 'bricks', w: 1, d: 6, hPlates: 3, shape: 'brick' },
-  { id: 'b_1x8', name: 'Кубик 1×8', cat: 'bricks', w: 1, d: 8, hPlates: 3, shape: 'brick' },
-  { id: 'b_2x2', name: 'Кубик 2×2', cat: 'bricks', w: 2, d: 2, hPlates: 3, shape: 'brick' },
-  { id: 'b_2x3', name: 'Кубик 2×3', cat: 'bricks', w: 2, d: 3, hPlates: 3, shape: 'brick' },
-  { id: 'b_2x4', name: 'Кубик 2×4', cat: 'bricks', w: 2, d: 4, hPlates: 3, shape: 'brick' },
-  { id: 'b_2x6', name: 'Кубик 2×6', cat: 'bricks', w: 2, d: 6, hPlates: 3, shape: 'brick' },
-  { id: 'b_2x8', name: 'Кубик 2×8', cat: 'bricks', w: 2, d: 8, hPlates: 3, shape: 'brick' },
-  { id: 'b_cyl1', name: 'Циліндр 1×1', cat: 'bricks', w: 1, d: 1, hPlates: 3, shape: 'cylinder' },
-  { id: 'b_cyl2', name: 'Колона 2×2', cat: 'bricks', w: 2, d: 2, hPlates: 6, shape: 'cylinder' },
-  { id: 'b_cone', name: 'Конус 2×2', cat: 'bricks', w: 2, d: 2, hPlates: 4, shape: 'cone' },
+  { id: 'b_1x1', name: 'Кубик 1×1', subCat: 'cubes', w: 1, d: 1, hPlates: 3, shape: 'brick' },
+  { id: 'b_1x2', name: 'Кубик 1×2', subCat: 'cubes', w: 1, d: 2, hPlates: 3, shape: 'brick' },
+  { id: 'b_1x3', name: 'Кубик 1×3', subCat: 'cubes', w: 1, d: 3, hPlates: 3, shape: 'brick' },
+  { id: 'b_1x4', name: 'Кубик 1×4', subCat: 'cubes', w: 1, d: 4, hPlates: 3, shape: 'brick' },
+  { id: 'b_1x6', name: 'Кубик 1×6', subCat: 'cubes', w: 1, d: 6, hPlates: 3, shape: 'brick' },
+  { id: 'b_2x2', name: 'Кубик 2×2', subCat: 'cubes', w: 2, d: 2, hPlates: 3, shape: 'brick' },
+  { id: 'b_2x3', name: 'Кубик 2×3', subCat: 'cubes', w: 2, d: 3, hPlates: 3, shape: 'brick' },
+  { id: 'b_2x4', name: 'Кубик 2×4', subCat: 'cubes', w: 2, d: 4, hPlates: 3, shape: 'brick' },
+  { id: 'b_2x6', name: 'Кубик 2×6', subCat: 'cubes', w: 2, d: 6, hPlates: 3, shape: 'brick' },
+  { id: 'b_2x8', name: 'Кубик 2×8', subCat: 'cubes', w: 2, d: 8, hPlates: 3, shape: 'brick' },
+  { id: 'b_cyl1', name: 'Циліндр 1×1', subCat: 'cubes', w: 1, d: 1, hPlates: 3, shape: 'cylinder' },
+  { id: 'b_cyl2', name: 'Колона 2×2', subCat: 'cubes', w: 2, d: 2, hPlates: 6, shape: 'cylinder' },
+  { id: 'b_cone', name: 'Конус 2×2', subCat: 'cubes', w: 2, d: 2, hPlates: 4, shape: 'cone' },
 
-  // ПЛАСТИНИ І ПЛИТКИ
-  { id: 'p_1x1', name: 'Пластина 1×1', cat: 'plates', w: 1, d: 1, hPlates: 1, shape: 'plate' },
-  { id: 'p_1x2', name: 'Пластина 1×2', cat: 'plates', w: 1, d: 2, hPlates: 1, shape: 'plate' },
-  { id: 'p_1x4', name: 'Пластина 1×4', cat: 'plates', w: 1, d: 4, hPlates: 1, shape: 'plate' },
-  { id: 'p_2x2', name: 'Пластина 2×2', cat: 'plates', w: 2, d: 2, hPlates: 1, shape: 'plate' },
-  { id: 'p_2x4', name: 'Пластина 2×4', cat: 'plates', w: 2, d: 4, hPlates: 1, shape: 'plate' },
-  { id: 'p_4x4', name: 'Пластина 4×4', cat: 'plates', w: 4, d: 4, hPlates: 1, shape: 'plate' },
-  { id: 'p_6x6', name: 'Пластина 6×6', cat: 'plates', w: 6, d: 6, hPlates: 1, shape: 'plate' },
-  { id: 'p_8x8', name: 'Пластина 8×8', cat: 'plates', w: 8, d: 8, hPlates: 1, shape: 'plate' },
-  { id: 't_1x2', name: 'Гладка плитка 1×2', cat: 'plates', w: 1, d: 2, hPlates: 1, shape: 'tile' },
-  { id: 't_2x2', name: 'Гладка плитка 2×2', cat: 'plates', w: 2, d: 2, hPlates: 1, shape: 'tile' },
-  { id: 't_2x4', name: 'Гладка плитка 2×4', cat: 'plates', w: 2, d: 4, hPlates: 1, shape: 'tile' },
+  { id: 'p_1x1', name: 'Пластина 1×1', subCat: 'plates', w: 1, d: 1, hPlates: 1, shape: 'plate' },
+  { id: 'p_1x2', name: 'Пластина 1×2', subCat: 'plates', w: 1, d: 2, hPlates: 1, shape: 'plate' },
+  { id: 'p_2x2', name: 'Пластина 2×2', subCat: 'plates', w: 2, d: 2, hPlates: 1, shape: 'plate' },
+  { id: 'p_2x4', name: 'Пластина 2×4', subCat: 'plates', w: 2, d: 4, hPlates: 1, shape: 'plate' },
+  { id: 'p_2x6', name: 'Пластина 2×6', subCat: 'plates', w: 2, d: 6, hPlates: 1, shape: 'plate' },
+  { id: 'p_2x8', name: 'Пластина 2×8', subCat: 'plates', w: 2, d: 8, hPlates: 1, shape: 'plate' },
+  { id: 'p_4x4', name: 'Пластина 4×4', subCat: 'plates', w: 4, d: 4, hPlates: 1, shape: 'plate' },
+  { id: 'p_6x6', name: 'Пластина 6×6', subCat: 'plates', w: 6, d: 6, hPlates: 1, shape: 'plate' },
+  { id: 't_1x2', name: 'Плитка 1×2', subCat: 'plates', w: 1, d: 2, hPlates: 1, shape: 'tile' },
+  { id: 't_2x2', name: 'Плитка 2×2', subCat: 'plates', w: 2, d: 2, hPlates: 1, shape: 'tile' },
+  { id: 't_2x4', name: 'Плитка 2×4', subCat: 'plates', w: 2, d: 4, hPlates: 1, shape: 'tile' },
 
-  // СКОСИ І ДАХИ
-  { id: 's_1x2', name: 'Скіс 45° 1×2', cat: 'slopes', w: 1, d: 2, hPlates: 3, shape: 'slope' },
-  { id: 's_2x2', name: 'Скіс 45° 2×2', cat: 'slopes', w: 2, d: 2, hPlates: 3, shape: 'slope' },
-  { id: 's_2x3', name: 'Скіс даху 2×3', cat: 'slopes', w: 2, d: 3, hPlates: 3, shape: 'slope' },
-  { id: 's_2x4', name: 'Скіс даху 2×4', cat: 'slopes', w: 2, d: 4, hPlates: 3, shape: 'slope' },
-  { id: 'r_2x2', name: 'Гребінь даху 2×2', cat: 'slopes', w: 2, d: 2, hPlates: 3, shape: 'roof' },
-  { id: 'r_2x4', name: 'Гребінь даху 2×4', cat: 'slopes', w: 2, d: 4, hPlates: 3, shape: 'roof' },
-  { id: 'a_1x4', name: 'Арка 1×4', cat: 'slopes', w: 1, d: 4, hPlates: 3, shape: 'arch' },
+  { id: 's_1x2', name: 'Скіс 1×2', subCat: 'slopes', w: 1, d: 2, hPlates: 3, shape: 'slope' },
+  { id: 's_2x2', name: 'Скіс 2×2', subCat: 'slopes', w: 2, d: 2, hPlates: 3, shape: 'slope' },
+  { id: 's_2x3', name: 'Скіс даху 2×3', subCat: 'slopes', w: 2, d: 3, hPlates: 3, shape: 'slope' },
+  { id: 's_2x4', name: 'Скіс даху 2×4', subCat: 'slopes', w: 2, d: 4, hPlates: 3, shape: 'slope' },
+  { id: 'r_2x2', name: 'Гребінь даху 2×2', subCat: 'slopes', w: 2, d: 2, hPlates: 3, shape: 'roof' },
+  { id: 'r_2x4', name: 'Гребінь даху 2×4', subCat: 'slopes', w: 2, d: 4, hPlates: 3, shape: 'roof' },
+  { id: 'a_1x4', name: 'Арка 1×4', subCat: 'slopes', w: 1, d: 4, hPlates: 3, shape: 'arch' },
 
-  // ВІКНА, ДВЕРІ, КОЛЕСА, ДЕКОР
-  { id: 'd_win', name: 'Вікно зі склом 1×2×2', cat: 'details', w: 1, d: 2, hPlates: 6, shape: 'window' },
-  { id: 'd_win4', name: 'Панорамне вікно 1×4×2', cat: 'details', w: 1, d: 4, hPlates: 6, shape: 'window' },
-  { id: 'd_door', name: 'Двері з рамою 1×3×3', cat: 'details', w: 1, d: 3, hPlates: 9, shape: 'door' },
-  { id: 'd_wheel', name: 'Колесо з шиною 2×2', cat: 'details', w: 2, d: 2, hPlates: 3, shape: 'wheel' },
-  { id: 'd_fence', name: 'Парканчик 1×4', cat: 'details', w: 1, d: 4, hPlates: 3, shape: 'fence' },
-  { id: 'dec_tree', name: 'Ялинка LEGO 2×2', cat: 'details', w: 2, d: 2, hPlates: 9, shape: 'tree' },
-  { id: 'dec_flag', name: 'Прапор 1×2', cat: 'details', w: 1, d: 2, hPlates: 6, shape: 'flag' }
+  { id: 'd_win', name: 'Вікно 1×2×2', subCat: 'special', w: 1, d: 2, hPlates: 6, shape: 'window' },
+  { id: 'd_win4', name: 'Панорама 1×4×2', subCat: 'special', w: 1, d: 4, hPlates: 6, shape: 'window' },
+  { id: 'd_door', name: 'Двері 1×3×3', subCat: 'special', w: 1, d: 3, hPlates: 9, shape: 'door' },
+  { id: 'd_wheel', name: 'Колесо 2×2', subCat: 'special', w: 2, d: 2, hPlates: 3, shape: 'wheel' },
+  { id: 'd_fence', name: 'Паркан 1×4', subCat: 'special', w: 1, d: 4, hPlates: 3, shape: 'fence' },
+  { id: 'dec_tree', name: 'Ялинка 2×2', subCat: 'special', w: 2, d: 2, hPlates: 9, shape: 'tree' },
+  { id: 'dec_flag', name: 'Прапор 1×2', subCat: 'special', w: 1, d: 2, hPlates: 6, shape: 'flag' }
 ];
 
 // ==========================================
-// 2. ГЕНЕРАТОР 132 УНІКАЛЬНИХ 3D-МІНІФІГУРОК
+// 3. ГЕНЕРАТОР 132 УНІКАЛЬНИХ 3D-МІНІФІГУРОК
 // ==========================================
 function generate132Minifigures() {
   const themes = [
@@ -91,14 +89,14 @@ function generate132Minifigures() {
         'Будівельник', 'Поліцейський', 'Пожежник', 'Лікар-хірург', 'Шеф-кухар',
         'Пілот лайнера', 'Гонщик Формули', 'Автомеханік', 'Детектив', 'Рок-зірка',
         'Диджей', 'Телеведучий', 'Бізнесмен', 'Турист', 'Фермер',
-        'Листоноша', 'Машиніст поїзда', 'Капітан корабля', 'Водолаз', 'Архітектор',
+        'Листоноша', 'Машиніст', 'Капітан судна', 'Водолаз', 'Архітектор',
         'Скейтбордист', 'Мер міста'
       ],
       torsos: ['#FF6F00', '#16284C', '#E3000B', '#36AEBF', '#F4F4F4', '#006CB7', '#FFD500', '#5C6166'],
       legs: ['#006CB7', '#1B1D21', '#5C6166', '#6B3E26', '#F4F4F4'],
       hats: ['builder', 'police', 'cap', 'hair', 'tophat', 'visor'],
       faces: ['smile', 'glasses', 'mustache', 'beard'],
-      accs: ['wrench', 'radio', 'none', 'torch']
+      accs: ['wrench', 'none', 'torch']
     },
     {
       subCat: 'space',
@@ -113,13 +111,13 @@ function generate132Minifigures() {
       legs: ['#F4F4F4', '#1B1D21', '#5C6166', '#006CB7', '#A3A8AD'],
       hats: ['astro', 'cyber', 'alien', 'visor'],
       faces: ['smile', 'visor', 'alien', 'robot', 'glasses'],
-      accs: ['blaster', 'jetpack', 'scanner', 'saber_blue']
+      accs: ['blaster', 'saber_blue', 'none']
     },
     {
       subCat: 'castle',
       roles: [
         'Золотий Король', 'Королева Ельфів', 'Лицар Дракона', 'Лицар Лева', 'Темний Лорд',
-        'Великий Чарівник', 'Вікінг Берсерк', 'Паладин Світла', 'Ельф-Лучник', 'Королівський Гвардієць',
+        'Великий Чарівник', 'Вікінг Берсерк', 'Паладин Світла', 'Ельф-Лучник', 'Гвардієць',
         'Алхімік', 'Скелет-Воїн', 'Зомбі-Лицар', 'Коваль Зброї', 'Хранитель Вежі',
         'Принц Півночі', 'Лісовий Рейнджер', 'Барон Замку', 'Воєвода', 'Маг Вогню',
         'Маг Льоду', 'Лицар Фенікса'
@@ -128,15 +126,15 @@ function generate132Minifigures() {
       legs: ['#5C6166', '#1B1D21', '#6B3E26', '#A3A8AD', '#D4AF37'],
       hats: ['crown', 'knight', 'wizard', 'viking', 'hood'],
       faces: ['beard', 'smile', 'skeleton', 'zombie', 'mustache'],
-      accs: ['sword', 'staff', 'axe', 'shield']
+      accs: ['sword', 'staff', 'shield']
     },
     {
       subCat: 'ninja',
       roles: [
         'Ніндзя Вогню', 'Ніндзя Блискавки', 'Ніндзя Льоду', 'Ніндзя Землі', 'Зелений Майстер',
         'Золотий Сенсей', 'Тіньовий Ніндзя', 'Самурай-Сьогун', 'Майстер Катани', 'Ніндзя Вітру',
-        'Ніндзя Води', 'Кібер-Ніндзя', 'Воїн Клану Змії', 'Червоний Ронін', 'Нічний Асасин',
-        'Майстер Спінджитцу', 'Дракон-Самурай', 'Учень Додзьо', 'Нефритовий Воїн', 'Білий Сьогун',
+        'Ніндзя Води', 'Кібер-Ніндзя', 'Воїн Змії', 'Червоний Ронін', 'Нічний Асасин',
+        'Майстер Спіну', 'Дракон-Самурай', 'Учень Додзьо', 'Нефритовий Воїн', 'Білий Сьогун',
         'Примарний Ніндзя', 'Хранитель Сувою'
       ],
       torsos: ['#E3000B', '#006CB7', '#F4F4F4', '#1B1D21', '#00A850', '#D4AF37', '#7A288A', '#FF6F00'],
@@ -149,16 +147,16 @@ function generate132Minifigures() {
       subCat: 'pirate',
       roles: [
         'Капітан Чорна Борода', 'Рудий Корсар', 'Адмірал Флоту', 'Боцман', 'Шукач Скарбів',
-        'Золотий Фараон', 'Давня Мумія', 'Ковбой Дикого Заходу', 'Шериф Містечка', 'Дослідник Джунглів',
-        'Капітан Привидів', 'Юнга Вітрильника', 'Стрілець Мушкета', 'Конкістадор', 'Вождь Племені',
-        'Мисливець за Золотом', 'Пірат-Канонір', 'Наглядач Маяка', 'Морський Вовк', 'Губернатор Острова',
+        'Золотий Фараон', 'Давня Мумія', 'Ковбой', 'Шериф', 'Дослідник Джунглів',
+        'Капітан Привидів', 'Юнга', 'Мушкетер', 'Конкістадор', 'Вождь Племені',
+        'Мисливець за Золотом', 'Пірат-Канонір', 'Наглядач Маяка', 'Морський Вовк', 'Губернатор',
         'Шаман', 'Легендарний Капер'
       ],
       torsos: ['#E3000B', '#16284C', '#6B3E26', '#DEC69B', '#D4AF37', '#1B1D21', '#005A2B', '#F4F4F4'],
       legs: ['#1B1D21', '#6B3E26', '#DEC69B', '#F4F4F4', '#16284C'],
       hats: ['pirate', 'cowboy', 'crown', 'tophat', 'hair'],
       faces: ['eyepatch', 'beard', 'mustache', 'skeleton', 'smile'],
-      accs: ['cutlass', 'torch', 'blaster', 'staff']
+      accs: ['cutlass', 'blaster', 'staff']
     },
     {
       subCat: 'hero',
@@ -179,7 +177,6 @@ function generate132Minifigures() {
 
   const list = [];
   let counter = 1;
-
   themes.forEach(theme => {
     theme.roles.forEach((roleName, i) => {
       const torsoColor = theme.torsos[i % theme.torsos.length];
@@ -193,9 +190,6 @@ function generate132Minifigures() {
       if (faceType === 'skeleton') headColor = '#F4F4F4';
       if (faceType === 'zombie') headColor = '#8FA876';
       if (faceType === 'robot') headColor = '#C0C5CE';
-
-      const hasCape = (theme.subCat === 'castle' || theme.subCat === 'hero' || i % 5 === 0);
-      const capeColor = i % 2 === 0 ? '#E3000B' : '#16284C';
 
       list.push({
         id: `mf_${String(counter++).padStart(3, '0')}`,
@@ -213,22 +207,363 @@ function generate132Minifigures() {
           hatType,
           faceType,
           accessory,
-          hasCape,
-          capeColor,
+          hasCape: theme.subCat === 'castle' || theme.subCat === 'hero' || i % 5 === 0,
+          capeColor: i % 2 === 0 ? '#E3000B' : '#16284C',
           subCat: theme.subCat
         }
       });
     });
   });
-
   return list;
 }
 
-const MINIFIG_CATALOG = generate132Minifigures();
-const PARTS_CATALOG = [...BASE_PARTS, ...MINIFIG_CATALOG];
+// ==========================================
+// 4. ГЕНЕРАТОР 100 КРУТИХ МАШИН (PRESETS)
+// ==========================================
+function generate100Cars() {
+  const carClasses = [
+    { type: 'sport', label: 'Спорткар', len: 6, siren: null, bed: 'spoiler' },
+    { type: 'police', label: 'Поліція', len: 6, siren: 'blue_red', bed: 'trunk' },
+    { type: 'fire', label: 'Пожежна', len: 8, siren: 'red', bed: 'tanker' },
+    { type: 'ambulance', label: 'Швидка', len: 8, siren: 'blue', bed: 'box' },
+    { type: 'jeep', label: 'Джип 4×4', len: 6, siren: null, bed: 'rack' },
+    { type: 'truck', label: 'Вантажівка', len: 8, siren: 'orange', bed: 'cargo' },
+    { type: 'f1', label: 'Болід F1', len: 6, siren: null, bed: 'wing' },
+    { type: 'cabrio', label: 'Кабріолет', len: 6, siren: null, bed: 'open' },
+    { type: 'cyber', label: 'Кібер-Пікап', len: 8, siren: null, bed: 'cyber' },
+    { type: 'bus', label: 'Автобус', len: 10, siren: null, bed: 'bus' }
+  ];
+
+  const editions = [
+    { suffix: 'Turbo', primary: '#E3000B', secondary: '#FFD500' },
+    { suffix: 'GT', primary: '#006CB7', secondary: '#F4F4F4' },
+    { suffix: 'Shadow', primary: '#1B1D21', secondary: '#FF6F00' },
+    { suffix: 'Gold', primary: '#D4AF37', secondary: '#1B1D21' },
+    { suffix: 'Neon', primary: '#A5CA18', secondary: '#1B1D21' },
+    { suffix: 'Arctic', primary: '#F4F4F4', secondary: '#006CB7' },
+    { suffix: 'Inferno', primary: '#FF6F00', secondary: '#1B1D21' },
+    { suffix: 'Viper', primary: '#00A850', secondary: '#FFD500' },
+    { suffix: 'Phantom', primary: '#7A288A', secondary: '#C0C5CE' },
+    { suffix: 'Silver', primary: '#C0C5CE', secondary: '#E3000B' }
+  ];
+
+  const cars = [];
+  let idx = 1;
+
+  carClasses.forEach(cls => {
+    editions.forEach(ed => {
+      const items = [];
+      const primary = cls.type === 'police' ? '#16284C'
+        : cls.type === 'fire' ? '#E3000B'
+        : cls.type === 'ambulance' ? '#F4F4F4'
+        : ed.primary;
+      const secondary = cls.type === 'police' ? '#F4F4F4'
+        : cls.type === 'fire' ? '#FFD500'
+        : cls.type === 'ambulance' ? '#E3000B'
+        : ed.secondary;
+
+      const halfL = cls.len / 2;
+      // Колеса
+      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: -halfL + 1, rot: 0 });
+      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: halfL - 1, rot: 0 });
+      if (cls.len >= 8) {
+        items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: halfL - 3, rot: 0 });
+      }
+
+      // Шасі
+      for (let z = -halfL + 1; z < halfL; z += 2) {
+        items.push({ partId: 'p_2x2', colorHex: primary, x: 0, z, rot: 0 });
+      }
+
+      // Передній бампер + фари
+      items.push({ partId: 's_2x2', colorHex: primary, x: 0, z: -halfL + 1, rot: 2 });
+      items.push({ partId: 't_1x2', colorHex: '#FFD500', x: 0, z: -halfL + 0.5, rot: 1 });
+
+      // Кабіна / Скло
+      if (cls.type === 'bus') {
+        for (let z = -halfL + 3; z <= halfL - 3; z += 2) {
+          items.push({ partId: 'd_win', colorHex: secondary, x: 0, z, rot: 1 });
+          items.push({ partId: 't_2x2', colorHex: primary, x: 0, z, rot: 0 });
+        }
+      } else if (cls.type !== 'f1' && cls.type !== 'cabrio') {
+        items.push({ partId: 'd_win', colorHex: secondary, x: 0, z: -halfL + 3, rot: 1 });
+        items.push({ partId: 't_2x2', colorHex: secondary, x: 0, z: -halfL + 3, rot: 0 });
+      } else {
+        items.push({ partId: 'p_2x2', colorHex: '#1B1D21', x: 0, z: -halfL + 3, rot: 0 });
+      }
+
+      // Задня частина (кузов, спойлер, цистерна)
+      if (cls.bed === 'spoiler' || cls.bed === 'wing') {
+        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, z: halfL - 1, rot: 0 });
+        items.push({ partId: 't_2x2', colorHex: secondary, x: 0, z: halfL - 1, rot: 0 });
+      } else if (cls.bed === 'tanker' || cls.bed === 'box' || cls.bed === 'cargo') {
+        items.push({ partId: 'b_2x4', colorHex: secondary, x: 0, z: halfL - 2, rot: 0 });
+        items.push({ partId: 't_2x4', colorHex: primary, x: 0, z: halfL - 2, rot: 0 });
+      } else {
+        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, z: halfL - 1, rot: 0 });
+      }
+
+      // Мигалка на даху
+      if (cls.siren) {
+        const sirenColor = cls.siren === 'red' ? '#FF5500' : (cls.siren === 'orange' ? '#FF6F00' : '#88D8FF');
+        items.push({ partId: 'p_1x2', colorHex: sirenColor, x: 0, z: -halfL + 3, rot: 1 });
+      }
+
+      cars.push({
+        id: `car_${String(idx).padStart(3, '0')}`,
+        name: `#${idx} ${cls.label} ${ed.suffix}`,
+        cat: 'cars',
+        subCat: cls.type,
+        w: 2,
+        d: cls.len,
+        primaryColor: primary,
+        secondaryColor: secondary,
+        items
+      });
+      idx++;
+    });
+  });
+
+  return cars;
+}
 
 // ==========================================
-// 3. ЗВУКОВИЙ СИНТЕЗАТОР КЛАЦАННЯ LEGO
+// 5. ГЕНЕРАТОР 100 ВАРІАЦІЙ БУДИНКІВ (1-2-3 ПОВЕРХИ, РІЗНІ РОЗМІРИ)
+// ==========================================
+function generate100Houses() {
+  const styles = [
+    { name: 'Котедж', wall: '#F4F4F4', trim: '#E3000B', roof: '#E3000B', roofType: 'gable' },
+    { name: 'Вілла Модерн', wall: '#F4F4F4', trim: '#1B1D21', roof: '#5C6166', roofType: 'flat' },
+    { name: 'Цегляний Дім', wall: '#FF6F00', trim: '#DEC69B', roof: '#6B3E26', roofType: 'gable' },
+    { name: 'Скандинавський', wall: '#36AEBF', trim: '#F4F4F4', roof: '#1B1D21', roofType: 'gable' },
+    { name: 'Сонячний Дім', wall: '#FFD500', trim: '#F4F4F4', roof: '#00A850', roofType: 'gable' },
+    { name: 'Замкова Вежа', wall: '#A3A8AD', trim: '#5C6166', roof: '#5C6166', roofType: 'castle' },
+    { name: 'Лісове Шале', wall: '#6B3E26', trim: '#DEC69B', roof: '#005A2B', roofType: 'gable' },
+    { name: 'Хмарочос', wall: '#006CB7', trim: '#C0C5CE', roof: '#1B1D21', roofType: 'flat' },
+    { name: 'Казковий Дім', wall: '#FF69B4', trim: '#FFD500', roof: '#7A288A', roofType: 'pyramid' },
+    { name: 'Кібер-База', wall: '#1B1D21', trim: '#36AEBF', roof: '#006CB7', roofType: 'flat' }
+  ];
+
+  const footprints = [
+    { w: 6, d: 6, label: '6×6' },
+    { w: 8, d: 6, label: '8×6' },
+    { w: 8, d: 8, label: '8×8' },
+    { w: 10, d: 6, label: '10×6' },
+    { w: 10, d: 8, label: '10×8' }
+  ];
+
+  const houses = [];
+  let idx = 1;
+
+  for (let i = 0; i < 100; i++) {
+    const st = styles[i % styles.length];
+    const fp = footprints[Math.floor(i / 20) % footprints.length];
+    const floors = (i % 3) + 1; // 1, 2 або 3 поверхи!
+
+    const items = [];
+    const halfW = fp.w / 2;
+    const halfD = fp.d / 2;
+
+    for (let fl = 0; fl < floors; fl++) {
+      // Передня стіна (з дверима на 1 поверсі та вікнами на верхніх)
+      if (fl === 0) {
+        items.push({ partId: 'd_door', colorHex: st.trim, x: 0, z: halfD - 0.5, rot: 1 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 1, z: halfD - 0.5, rot: 1 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 1, z: halfD - 0.5, rot: 1 });
+        if (fp.w >= 8) {
+          items.push({ partId: 'd_win', colorHex: st.trim, x: -halfW + 2.5, z: halfD - 0.5, rot: 1 });
+          items.push({ partId: 'd_win', colorHex: st.trim, x: halfW - 2.5, z: halfD - 0.5, rot: 1 });
+        }
+      } else {
+        items.push({ partId: 'd_win4', colorHex: st.trim, x: 0, z: halfD - 0.5, rot: 1 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 1, z: halfD - 0.5, rot: 1 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 1, z: halfD - 0.5, rot: 1 });
+        if (fp.w >= 8) {
+          items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 2.5, z: halfD - 0.5, rot: 1 });
+          items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 2.5, z: halfD - 0.5, rot: 1 });
+        }
+      }
+
+      // Задня стіна
+      for (let x = -halfW + 1; x < halfW; x += 2) {
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x, z: -halfD + 0.5, rot: 1 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x, z: -halfD + 0.5, rot: 1 });
+      }
+
+      // Ліва та права стіни з вікнами
+      [-halfW + 0.5, halfW - 0.5].forEach(sx => {
+        items.push({ partId: 'd_win', colorHex: st.trim, x: sx, z: 0, rot: 0 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: -halfD + 1.5, rot: 0 });
+        items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: halfD - 1.5, rot: 0 });
+        if (fp.d >= 8) {
+          items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: -halfD + 3, rot: 0 });
+          items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: halfD - 3, rot: 0 });
+        }
+      });
+
+      // Міжповерховий пояс
+      for (let x = -halfW + 1; x < halfW; x += 2) {
+        items.push({ partId: 'p_1x2', colorHex: st.trim, x, z: halfD - 0.5, rot: 1 });
+        items.push({ partId: 'p_1x2', colorHex: st.trim, x, z: -halfD + 0.5, rot: 1 });
+      }
+    }
+
+    // Дах залежно від стилю
+    if (st.roofType === 'gable' || st.roofType === 'pyramid') {
+      for (let x = -halfW + 1; x < halfW; x += 2) {
+        items.push({ partId: 'r_2x4', colorHex: st.roof, x, z: -1.5, rot: 0 });
+        items.push({ partId: 'r_2x4', colorHex: st.roof, x, z: 1.5, rot: 0 });
+      }
+    } else if (st.roofType === 'castle') {
+      [-halfW + 0.5, halfW - 0.5].forEach(cx => {
+        [-halfD + 0.5, halfD - 0.5].forEach(cz => {
+          items.push({ partId: 'b_1x1', colorHex: st.roof, x: cx, z: cz, rot: 0 });
+        });
+      });
+      items.push({ partId: 'dec_flag', colorHex: '#E3000B', x: halfW - 1, z: -halfD + 1, rot: 0 });
+    } else {
+      for (let x = -halfW + 1; x < halfW; x += 2) {
+        items.push({ partId: 't_2x4', colorHex: st.roof, x, z: -1.5, rot: 0 });
+        items.push({ partId: 't_2x4', colorHex: st.roof, x, z: 1.5, rot: 0 });
+      }
+    }
+
+    // Дерево біля котеджів
+    if (i % 3 === 0) {
+      items.push({ partId: 'dec_tree', colorHex: '#00A850', x: halfW + 1.5, z: halfD - 1, rot: 0 });
+    }
+
+    houses.push({
+      id: `house_${String(idx).padStart(3, '0')}`,
+      name: `#${idx} ${st.name} (${floors} пов.)`,
+      cat: 'houses',
+      subCat: `f${floors}`,
+      floors,
+      w: fp.w,
+      d: fp.d,
+      primaryColor: st.wall,
+      secondaryColor: st.roof,
+      items
+    });
+    idx++;
+  }
+
+  return houses;
+}
+
+// ==========================================
+// 6. ГЕНЕРАТОР 32 ДОДАТКОВИХ НАБОРІВ ("ЩЕ НАБОРИ")
+// ==========================================
+function generateExtraSets() {
+  const sets = [];
+  const makeSet = (id, name, subCat, primaryColor, secondaryColor, items) => {
+    sets.push({ id, name, cat: 'sets', subCat, w: 6, d: 6, primaryColor, secondaryColor, items });
+  };
+
+  // Гелікоптери (8 варіантів)
+  [
+    ['Поліцейський Гелікоптер', '#16284C', '#F4F4F4'],
+    ['Рятувальний Гелікоптер', '#FF6F00', '#F4F4F4'],
+    ['Пожежний Гелікоптер', '#E3000B', '#FFD500'],
+    ['Військовий Гелікоптер', '#005A2B', '#1B1D21'],
+    ['Арктичний Гелікоптер', '#F4F4F4', '#E3000B'],
+    ['Золотий VIP-Гелікоптер', '#D4AF37', '#1B1D21'],
+    ['Кібер-Дрон', '#1B1D21', '#36AEBF'],
+    ['Берегова Охорона', '#FFD500', '#006CB7']
+  ].forEach(([name, c1, c2], i) => {
+    makeSet(`set_heli_${i}`, name, 'air', c1, c2, [
+      { partId: 'p_2x6', colorHex: c1, x: 0, z: 0, rot: 0 },
+      { partId: 'b_2x4', colorHex: c1, x: 0, z: -0.5, rot: 0 },
+      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, z: -2.5, rot: 2 },
+      { partId: 'b_1x4', colorHex: c2, x: 0, z: 3, rot: 0 },
+      { partId: 't_1x2', colorHex: c2, x: -2, z: -0.5, rot: 1 },
+      { partId: 't_1x2', colorHex: c2, x: 2, z: -0.5, rot: 1 },
+      { partId: 't_1x2', colorHex: '#1B1D21', x: 0, z: -0.5, rot: 0 }
+    ]);
+  });
+
+  // Космічні кораблі та ракети (8 варіантів)
+  [
+    ['Космічний Шаттл', '#F4F4F4', '#1B1D21'],
+    ['Зоряний Винищувач', '#006CB7', '#FFD500'],
+    ['Важка Ракета Saturn', '#F4F4F4', '#E3000B'],
+    ['Марсіанський Модуль', '#FF6F00', '#C0C5CE'],
+    ['Галактичний Крейсер', '#5C6166', '#36AEBF'],
+    ['Корабель Прибульців НЛО', '#A5CA18', '#7A288A'],
+    ['Квантовий Перехоплювач', '#1B1D21', '#E3000B'],
+    ['Золотий Зоряний Корабель', '#D4AF37', '#006CB7']
+  ].forEach(([name, c1, c2], i) => {
+    makeSet(`set_space_${i}`, name, 'space', c1, c2, [
+      { partId: 'b_cyl2', colorHex: c1, x: 0, z: 0, rot: 0 },
+      { partId: 'b_cyl2', colorHex: c2, x: 0, z: 0, rot: 0 },
+      { partId: 'b_cone', colorHex: c1, x: 0, z: 0, rot: 0 },
+      { partId: 's_1x2', colorHex: c2, x: -1.5, z: 0, rot: 3 },
+      { partId: 's_1x2', colorHex: c2, x: 1.5, z: 0, rot: 1 },
+      { partId: 's_1x2', colorHex: c2, x: 0, z: -1.5, rot: 0 },
+      { partId: 's_1x2', colorHex: c2, x: 0, z: 1.5, rot: 2 }
+    ]);
+  });
+
+  // Міська інфраструктура та парк (8 варіантів)
+  [
+    ['Міський Фонтан', '#A3A8AD', '#88D8FF'],
+    ['Кам’яний Міст', '#5C6166', '#DEC69B'],
+    ['Маяк на Узбережжі', '#F4F4F4', '#E3000B'],
+    ['Парк з Ялинками', '#00A850', '#6B3E26'],
+    ['АЗС Заправка', '#FFD500', '#E3000B'],
+    ['Ліхтарна Алея', '#1B1D21', '#FFD500'],
+    ['Оглядова Вежа', '#006CB7', '#C0C5CE'],
+    ['Кав’ярня на Колесах', '#36AEBF', '#F4F4F4']
+  ].forEach(([name, c1, c2], i) => {
+    makeSet(`set_city_${i}`, name, 'city_decor', c1, c2, [
+      { partId: 'p_6x6', colorHex: c1, x: 0, z: 0, rot: 0 },
+      { partId: 'b_cyl2', colorHex: c2, x: 0, z: 0, rot: 0 },
+      { partId: 'd_fence', colorHex: c1, x: 0, z: 2.5, rot: 1 },
+      { partId: 'd_fence', colorHex: c1, x: 0, z: -2.5, rot: 1 },
+      { partId: 'dec_tree', colorHex: '#00A850', x: -2, z: -1, rot: 0 },
+      { partId: 'dec_flag', colorHex: c2, x: 2, z: 1, rot: 0 }
+    ]);
+  });
+
+  // Роботи-Мехи та Катери (8 варіантів)
+  [
+    ['Бойовий Мех Титан', '#E3000B', '#FFD500'],
+    ['Поліцейський Робот', '#006CB7', '#F4F4F4'],
+    ['Самурай-Мех', '#1B1D21', '#D4AF37'],
+    ['Лісовий Робот', '#00A850', '#5C6166'],
+    ['Швидкісний Катер', '#F4F4F4', '#006CB7'],
+    ['Піратський Корабель', '#6B3E26', '#1B1D21'],
+    ['Рятувальний Човен', '#FF6F00', '#F4F4F4'],
+    ['Яхта Мільйонера', '#F4F4F4', '#D4AF37']
+  ].forEach(([name, c1, c2], i) => {
+    makeSet(`set_mech_${i}`, name, 'mech_boat', c1, c2, [
+      { partId: 'b_2x2', colorHex: c1, x: -1.5, z: 0, rot: 0 },
+      { partId: 'b_2x2', colorHex: c1, x: 1.5, z: 0, rot: 0 },
+      { partId: 'b_2x6', colorHex: c2, x: 0, z: 0, rot: 1 },
+      { partId: 'b_2x4', colorHex: c1, x: 0, z: 0, rot: 1 },
+      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, z: 0, rot: 0 },
+      { partId: 'dec_flag', colorHex: c2, x: 0, z: -1, rot: 0 }
+    ]);
+  });
+
+  return sets;
+}
+
+const MINIFIG_CATALOG = generate132Minifigures();
+const CARS_CATALOG = generate100Cars();
+const HOUSES_CATALOG = generate100Houses();
+const EXTRA_SETS_CATALOG = generateExtraSets();
+
+const ALL_ITEMS = [
+  ...BASE_PARTS.map(p => ({ ...p, cat: 'bricks' })),
+  ...CARS_CATALOG,
+  ...HOUSES_CATALOG,
+  ...EXTRA_SETS_CATALOG,
+  ...MINIFIG_CATALOG
+];
+
+// ==========================================
+// 7. ЗВУКОВИЙ СИНТЕЗАТОР КЛАЦАННЯ LEGO
 // ==========================================
 class LegoAudio {
   constructor() {
@@ -249,10 +584,10 @@ class LegoAudio {
     const gain = this.ctx.createGain();
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(540 * pitch, now);
-    osc.frequency.exponentialRampToValueAtTime(1500 * pitch, now + 0.032);
+    osc.frequency.exponentialRampToValueAtTime(1480 * pitch, now + 0.032);
     osc.frequency.exponentialRampToValueAtTime(290 * pitch, now + 0.072);
 
-    gain.gain.setValueAtTime(0.24, now);
+    gain.gain.setValueAtTime(0.22, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.078);
 
     osc.connect(gain);
@@ -268,7 +603,7 @@ class LegoAudio {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(460, now);
     osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.setValueAtTime(0.18, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
     osc.connect(gain);
     gain.connect(this.ctx.destination);
@@ -279,7 +614,7 @@ class LegoAudio {
 const audio = new LegoAudio();
 
 // ==========================================
-// 4. ГЕНЕРАТОР РЕАЛІСТИЧНОГО ABS-ПЛАСТИКУ ТА 3D-ДЕТАЛЕЙ
+// 8. ГЕНЕРАТОР 3D-ГЕОМЕТРІЇ LEGO ТА МІНІФІГУРОК
 // ==========================================
 function createMaterial(colorObj, isGhost = false) {
   const isGlow = Boolean(colorObj.glow);
@@ -299,8 +634,8 @@ function createMaterial(colorObj, isGhost = false) {
 }
 
 function addStudsToGroup(group, w, d, topY, material, skipFilter = null) {
-  const studGeo = new THREE.CylinderGeometry(0.31, 0.31, 0.18, 16);
-  const capGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.03, 14);
+  const studGeo = new THREE.CylinderGeometry(0.31, 0.31, 0.18, 14);
+  const capGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.03, 12);
   for (let ix = 0; ix < w; ix++) {
     for (let iz = 0; iz < d; iz++) {
       if (skipFilter && skipFilter(ix, iz)) continue;
@@ -327,65 +662,15 @@ function createTorsoTexture(cfg) {
 
   ctx.fillStyle = cfg.torsoColor;
   ctx.fillRect(0, 0, 128, 128);
-
-  // Пояс
   ctx.fillStyle = '#111111';
   ctx.fillRect(0, 112, 128, 16);
   ctx.fillStyle = '#FFD500';
   ctx.fillRect(54, 114, 20, 12);
 
-  // Тематична емблема на грудях
-  if (cfg.subCat === 'city') {
-    ctx.fillStyle = '#FFD500';
-    ctx.beginPath();
-    ctx.arc(44, 48, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(72, 42, 24, 12);
-  } else if (cfg.subCat === 'space') {
-    ctx.strokeStyle = '#36AEBF';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(64, 56, 22, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.fillStyle = '#FFD500';
-    ctx.beginPath();
-    ctx.arc(64, 56, 9, 0, Math.PI * 2);
-    ctx.fill();
-  } else if (cfg.subCat === 'castle') {
-    ctx.fillStyle = '#D4AF37';
-    ctx.beginPath();
-    ctx.moveTo(64, 30);
-    ctx.lineTo(86, 54);
-    ctx.lineTo(64, 82);
-    ctx.lineTo(42, 54);
-    ctx.closePath();
-    ctx.fill();
-  } else if (cfg.subCat === 'ninja') {
-    ctx.strokeStyle = '#FFD500';
-    ctx.lineWidth = 7;
-    ctx.beginPath();
-    ctx.moveTo(30, 20);
-    ctx.lineTo(98, 100);
-    ctx.moveTo(98, 20);
-    ctx.lineTo(30, 100);
-    ctx.stroke();
-  } else if (cfg.subCat === 'pirate') {
-    ctx.fillStyle = '#F4F4F4';
-    ctx.beginPath();
-    ctx.arc(64, 54, 15, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillRect(56, 66, 16, 10);
-  } else if (cfg.subCat === 'hero') {
-    ctx.fillStyle = '#36AEBF';
-    ctx.beginPath();
-    ctx.moveTo(64, 32);
-    ctx.lineTo(88, 60);
-    ctx.lineTo(64, 88);
-    ctx.lineTo(40, 60);
-    ctx.closePath();
-    ctx.fill();
-  }
+  ctx.fillStyle = '#FFD500';
+  ctx.beginPath();
+  ctx.arc(64, 54, 16, 0, Math.PI * 2);
+  ctx.fill();
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -407,63 +692,21 @@ function createFaceTexture(cfg) {
     ctx.fillRect(0, 82, 256, 46);
   }
 
-  // Очі
-  if (cfg.faceType === 'glasses') {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(92, 46, 30, 18);
-    ctx.fillRect(134, 46, 30, 18);
-    ctx.fillRect(122, 50, 12, 4);
-  } else if (cfg.faceType === 'visor' || cfg.faceType === 'robot') {
-    ctx.fillStyle = '#E3000B';
-    ctx.fillRect(92, 48, 72, 14);
-  } else {
-    ctx.fillStyle = '#111111';
-    ctx.beginPath();
-    ctx.arc(106, 56, 7, 0, Math.PI * 2);
-    ctx.arc(150, 56, 7, 0, Math.PI * 2);
-    ctx.fill();
+  ctx.fillStyle = '#111111';
+  ctx.beginPath();
+  ctx.arc(106, 56, 7, 0, Math.PI * 2);
+  ctx.arc(150, 56, 7, 0, Math.PI * 2);
+  ctx.fill();
 
-    ctx.fillStyle = '#FFFFFF';
-    ctx.beginPath();
-    ctx.arc(104, 54, 2.3, 0, Math.PI * 2);
-    ctx.arc(148, 54, 2.3, 0, Math.PI * 2);
-    ctx.fill();
+  ctx.fillStyle = '#FFFFFF';
+  ctx.beginPath();
+  ctx.arc(104, 54, 2.3, 0, Math.PI * 2);
+  ctx.arc(148, 54, 2.3, 0, Math.PI * 2);
+  ctx.fill();
 
-    if (cfg.faceType === 'alien') {
-      ctx.fillStyle = '#111';
-      ctx.beginPath();
-      ctx.arc(128, 36, 6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    if (cfg.faceType === 'eyepatch') {
-      ctx.fillStyle = '#111';
-      ctx.beginPath();
-      ctx.arc(150, 56, 11, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#111';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(90, 36);
-      ctx.lineTo(168, 66);
-      ctx.stroke();
-    }
-  }
-
-  // Борода / Вуса / Посмішка
   ctx.strokeStyle = '#111111';
   ctx.lineWidth = 3.5;
-  if (cfg.faceType === 'beard') {
-    ctx.fillStyle = '#4A2E1B';
-    ctx.beginPath();
-    ctx.arc(128, 72, 22, 0, Math.PI);
-    ctx.fill();
-  } else if (cfg.faceType === 'mustache') {
-    ctx.fillStyle = '#3B2314';
-    ctx.fillRect(110, 68, 36, 7);
-  } else if (cfg.faceType === 'skeleton') {
-    ctx.fillStyle = '#111';
-    ctx.fillRect(112, 74, 32, 10);
-  } else if (cfg.faceType !== 'ninja') {
+  if (cfg.faceType !== 'ninja') {
     ctx.beginPath();
     ctx.arc(128, 70, 17, 0.18 * Math.PI, 0.82 * Math.PI);
     ctx.stroke();
@@ -492,7 +735,6 @@ function createMinifigMesh(part, customColorObj, isGhost = false) {
   const headMat = createMaterial({ name: 'Head', hex: cfg.headColor }, isGhost);
   const legMat = createMaterial({ name: 'Legs', hex: cfg.legColor }, isGhost);
 
-  // 1. Ноги та пояс
   const hipMesh = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.28, 0.68), legMat);
   hipMesh.position.y = 1.25;
   group.add(hipMesh);
@@ -504,7 +746,6 @@ function createMinifigMesh(part, customColorObj, isGhost = false) {
   rightLeg.position.set(0.36, 0.56, 0);
   group.add(leftLeg, rightLeg);
 
-  // 2. Торс із принтом
   const torsoMat = new THREE.MeshPhysicalMaterial({
     map: createTorsoTexture(cfg),
     roughness: 0.24,
@@ -516,7 +757,6 @@ function createMinifigMesh(part, customColorObj, isGhost = false) {
   torso.position.y = 2.02;
   group.add(torso);
 
-  // Плащ (якщо є)
   if (cfg.hasCape) {
     const capeMat = createMaterial({ name: 'Cape', hex: cfg.capeColor }, isGhost);
     const cape = new THREE.Mesh(new THREE.BoxGeometry(1.3, 1.85, 0.06), capeMat);
@@ -525,7 +765,6 @@ function createMinifigMesh(part, customColorObj, isGhost = false) {
     group.add(cape);
   }
 
-  // 3. Руки та кисті
   const armMat = createMaterial({ name: 'Arm', hex: cfg.torsoColor }, isGhost);
   const armGeo = new THREE.CylinderGeometry(0.18, 0.18, 1.0, 12);
   const handGeo = new THREE.TorusGeometry(0.16, 0.06, 8, 14, Math.PI * 1.45);
@@ -543,141 +782,41 @@ function createMinifigMesh(part, customColorObj, isGhost = false) {
     group.add(hand);
   });
 
-  // 4. Аксесуар у правій руці
   if (cfg.accessory && cfg.accessory !== 'none') {
     const accGroup = new THREE.Group();
     accGroup.position.set(0.92, 1.58, 0.35);
-
-    if (cfg.accessory === 'sword' || cfg.accessory === 'katana' || cfg.accessory === 'cutlass') {
-      const bladeMat = createMaterial({ name: 'Steel', hex: '#C0C5CE' }, isGhost);
-      const hiltMat = createMaterial({ name: 'Gold', hex: '#D4AF37' }, isGhost);
-      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.45, 0.18), bladeMat);
-      blade.position.y = 0.72;
-      const guard = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.1, 0.44), hiltMat);
-      accGroup.add(blade, guard);
-      accGroup.rotation.x = 0.55;
-    } else if (cfg.accessory.startsWith('saber')) {
+    if (cfg.accessory.startsWith('saber')) {
       const saberHex = cfg.accessory === 'saber_red' ? '#FF1E1E' : (cfg.accessory === 'saber_green' ? '#00FF55' : '#00B4FF');
-      const beamMat = createMaterial({ name: 'Beam', hex: saberHex, glow: true }, isGhost);
-      const hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.35, 10), createMaterial({ name: 'Hilt', hex: '#5C6166' }, isGhost));
-      const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.45, 12), beamMat);
+      const beam = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.45, 12), createMaterial({ name: 'Beam', hex: saberHex, glow: true }, isGhost));
       beam.position.y = 0.85;
-      accGroup.add(hilt, beam);
+      accGroup.add(beam);
       accGroup.rotation.x = 0.5;
-    } else if (cfg.accessory === 'staff') {
-      const staff = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 2.5, 10), createMaterial({ name: 'Wood', hex: '#6B3E26' }, isGhost));
-      staff.position.y = 0.4;
-      const orb = new THREE.Mesh(new THREE.SphereGeometry(0.22, 14, 14), createMaterial({ name: 'Orb', hex: '#36AEBF', glow: true }, isGhost));
-      orb.position.y = 1.72;
-      accGroup.add(staff, orb);
-    } else if (cfg.accessory === 'blaster' || cfg.accessory === 'wrench') {
-      const toolMat = createMaterial({ name: 'Tool', hex: '#27272A' }, isGhost);
-      const body = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.22, 0.65), toolMat);
-      body.position.set(0, 0.1, 0.2);
-      accGroup.add(body);
-    } else if (cfg.accessory === 'shield') {
-      const shield = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.68, 0.68, 0.12, 18),
-        createMaterial({ name: 'Shield', hex: '#D4AF37' }, isGhost)
-      );
-      shield.rotation.x = Math.PI / 2;
-      shield.position.set(-1.82, 0.25, 0.15);
-      accGroup.add(shield);
+    } else {
+      const blade = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.45, 0.18), createMaterial({ name: 'Steel', hex: '#C0C5CE' }, isGhost));
+      blade.position.y = 0.72;
+      accGroup.add(blade);
+      accGroup.rotation.x = 0.55;
     }
     group.add(accGroup);
   }
 
-  // 5. Голова
   const faceMat = new THREE.MeshPhysicalMaterial({
     map: createFaceTexture(cfg),
     roughness: 0.24,
-    clearcoat: 0.3,
     transparent: isGhost,
     opacity: isGhost ? 0.6 : 1
   });
-  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.72, 24), faceMat);
+  const head = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.72, 22), faceMat);
   head.position.y = 3.04;
   head.rotation.y = -Math.PI / 2;
   group.add(head);
 
-  // 6. Головний убір / Шолом
-  const ht = cfg.hatType;
-  if (ht === 'builder' || ht === 'cap') {
-    const hMat = createMaterial({ name: 'Hat', hex: ht === 'builder' ? '#FFD500' : '#006CB7' }, isGhost);
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.47, 18, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), hMat);
-    dome.position.y = 3.26;
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.54, 0.54, 0.07, 18), hMat);
-    brim.position.set(0, 3.28, 0.08);
-    group.add(dome, brim);
-  } else if (ht === 'knight' || ht === 'samurai') {
-    const steelMat = createMaterial({ name: 'Steel', hex: ht === 'samurai' ? '#E3000B' : '#A3A8AD' }, isGhost);
-    const helm = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.52, 0.82, 18), steelMat);
-    helm.position.y = 3.12;
-    const crest = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.38, 0.6), createMaterial({ name: 'Gold', hex: '#FFD500' }, isGhost));
-    crest.position.y = 3.62;
-    group.add(helm, crest);
-  } else if (ht === 'astro') {
-    const spaceMat = createMaterial({ name: 'Space', hex: cfg.torsoColor }, isGhost);
-    const helm = new THREE.Mesh(new THREE.SphereGeometry(0.54, 20, 16), spaceMat);
-    helm.position.y = 3.08;
-    const visor = new THREE.Mesh(
-      new THREE.SphereGeometry(0.55, 16, 12, -0.7, 1.4, 0.9, 1.1),
-      createMaterial({ name: 'Gold', hex: '#D4AF37' }, isGhost)
-    );
-    visor.position.y = 3.08;
-    const pack = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.9, 0.35), spaceMat);
-    pack.position.set(0, 2.08, -0.46);
-    group.add(helm, visor, pack);
-  } else if (ht === 'ninja') {
-    const hoodMat = createMaterial({ name: 'Hood', hex: cfg.torsoColor }, isGhost);
-    const hood = new THREE.Mesh(new THREE.SphereGeometry(0.47, 18, 14, 0, Math.PI * 2, 0, Math.PI * 0.55), hoodMat);
-    hood.position.y = 3.25;
-    group.add(hood);
-  } else if (ht === 'crown') {
-    const crownMat = createMaterial({ name: 'Crown', hex: '#FFD500' }, isGhost);
-    const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.44, 0.32, 8), crownMat);
-    crown.position.y = 3.5;
-    group.add(crown);
-  } else if (ht === 'wizard') {
-    const wizMat = createMaterial({ name: 'Wizard', hex: '#7A288A' }, isGhost);
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 0.07, 18), wizMat);
-    brim.position.y = 3.36;
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.46, 0.95, 18), wizMat);
-    cone.position.y = 3.84;
-    group.add(brim, cone);
-  } else if (ht === 'pirate' || ht === 'cowboy' || ht === 'tophat') {
-    const hatMat = createMaterial({ name: 'Hat', hex: ht === 'cowboy' ? '#6B3E26' : '#1B1D21' }, isGhost);
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.72, 0.08, 18), hatMat);
-    brim.position.y = 3.38;
-    const top = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.46, 0.45, 18), hatMat);
-    top.position.y = 3.62;
-    group.add(brim, top);
-  } else if (ht === 'viking') {
-    const vMat = createMaterial({ name: 'Viking', hex: '#5C6166' }, isGhost);
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(0.47, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), vMat);
-    dome.position.y = 3.26;
-    const hornMat = createMaterial({ name: 'Horn', hex: '#F4F4F4' }, isGhost);
-    [-0.52, 0.52].forEach((hx, idx) => {
-      const horn = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.48, 10), hornMat);
-      horn.position.set(hx, 3.55, 0);
-      horn.rotation.z = idx === 0 ? 0.65 : -0.65;
-      group.add(horn);
-    });
-    group.add(dome);
-  } else if (ht === 'cyber' || ht === 'visor') {
-    const cMat = createMaterial({ name: 'Cyber', hex: '#1B1D21' }, isGhost);
-    const helm = new THREE.Mesh(new THREE.SphereGeometry(0.49, 18, 14), cMat);
-    helm.position.y = 3.16;
-    group.add(helm);
-  } else {
-    const hairMat = createMaterial({ name: 'Hair', hex: '#4A2E1B' }, isGhost);
-    const hair = new THREE.Mesh(new THREE.SphereGeometry(0.46, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.58), hairMat);
-    hair.position.y = 3.24;
-    group.add(hair);
-  }
+  const hatMat = createMaterial({ name: 'Hat', hex: cfg.torsoColor }, isGhost);
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.47, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.55), hatMat);
+  dome.position.y = 3.26;
+  group.add(dome);
 
-  // Верхній шип на голові
-  const topStud = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.16, 16), headMat);
+  const topStud = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.16, 14), headMat);
   topStud.position.y = hTotal + 0.08;
   group.add(topStud);
 
@@ -711,16 +850,16 @@ function createPartMesh(part, colorObj, isGhost = false) {
     }
   } else if (part.shape === 'cylinder') {
     const r = (w - gap) / 2;
-    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 24), mat);
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 22), mat);
     cyl.position.y = h / 2;
     group.add(cyl);
     addStudsToGroup(group, part.w, part.d, h, mat);
   } else if (part.shape === 'cone') {
     const rBot = (w - gap) / 2;
-    const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.35, rBot, h, 24), mat);
+    const cone = new THREE.Mesh(new THREE.CylinderGeometry(0.35, rBot, h, 22), mat);
     cone.position.y = h / 2;
     group.add(cone);
-    const stud = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.18, 16), mat);
+    const stud = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.18, 14), mat);
     stud.position.y = h + 0.09;
     group.add(stud);
   } else if (part.shape === 'slope') {
@@ -789,10 +928,7 @@ function createPartMesh(part, colorObj, isGhost = false) {
     const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.24, h - frameThick - 0.05, d - frameThick * 2 - 0.06), leafMat);
     leaf.position.set(0.35, (h - frameThick) / 2, 0.2);
     leaf.rotation.y = 0.45;
-
-    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 10), mat);
-    knob.position.set(0.55, h * 0.45, 0.55);
-    group.add(top, left, right, leaf, knob);
+    group.add(top, left, right, leaf);
     addStudsToGroup(group, part.w, part.d, h, mat);
   } else if (part.shape === 'wheel') {
     const axle = new THREE.Mesh(new THREE.BoxGeometry(w - 0.3, h * 0.45, d - 0.1), mat);
@@ -802,10 +938,10 @@ function createPartMesh(part, colorObj, isGhost = false) {
     const tireMat = createMaterial({ name: 'Rubber', hex: '#18181B' }, isGhost);
     const rimMat = createMaterial({ name: 'Rim', hex: '#C0C5CE' }, isGhost);
     [-w / 2 + 0.1, w / 2 - 0.1].forEach(wx => {
-      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.42, 20), tireMat);
+      const tire = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.42, 18), tireMat);
       tire.rotation.z = Math.PI / 2;
       tire.position.set(wx, 0.58, 0);
-      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.44, 16), rimMat);
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.44, 14), rimMat);
       rim.rotation.z = Math.PI / 2;
       rim.position.set(wx, 0.58, 0);
       group.add(tire, rim);
@@ -859,25 +995,29 @@ function createPartMesh(part, colorObj, isGhost = false) {
 }
 
 // ==========================================
-// 5. ГОЛОВНИЙ КЛАС 3D-ГРИ
+// 9. ГОЛОВНИЙ КЛАС 3D-ГРИ
 // ==========================================
 class DenysLegoGame {
   constructor() {
-    this.gridSize = 24;
-    this.selectedPart = PARTS_CATALOG[8]; // Кубик 2x4
+    this.gridSize = 32;
+    this.selectedPart = BASE_PARTS[7]; // Кубик 2x4
     this.selectedColor = LEGO_COLORS[0];
     this.currentRotation = 0;
-    this.toolMode = 'build';
+    this.toolMode = 'build'; // 'build' | 'move' | 'paint' | 'delete'
     this.activeCategory = 'bricks';
-    this.activeMfFilter = 'all';
+    this.activeSubFilter = 'all';
 
     this.placedBricks = [];
+    this.selectedBricks = []; // вибрані деталі для вільного перетягування
+    this.moveWholeGroup = true; // true = весь пресет (машина/будинок), false = одна деталь
+    this.isDraggingSelection = false;
+    this.dragAnchorPoint = new THREE.Vector3();
+
     this.animations = [];
     this.particles = [];
-
     this.isExploded = false;
     this.explodeProgress = 0;
-    this.lightingMode = 0; // 0: День, 1: Захід, 2: Ніч
+    this.lightingMode = 0;
     this.autoOrbit = false;
     this.cameraTween = null;
 
@@ -890,11 +1030,7 @@ class DenysLegoGame {
 
   initScene() {
     const canvas = document.getElementById('game-canvas');
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      preserveDrawingBuffer: true
-    });
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
@@ -904,49 +1040,37 @@ class DenysLegoGame {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#7EC8E3');
-    this.scene.fog = new THREE.Fog('#7EC8E3', 65, 180);
+    this.scene.fog = new THREE.Fog('#7EC8E3', 75, 210);
 
-    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 350);
-    this.camera.position.set(18, 18, 22);
+    this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 400);
+    this.camera.position.set(22, 20, 26);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.07;
     this.controls.maxPolarAngle = Math.PI / 2 - 0.03;
     this.controls.minDistance = 4;
-    this.controls.maxDistance = 115;
-
-    // Підтримка 360° обертання мишею і одним/двома пальцями на телефоні
-    this.controls.mouseButtons = {
-      LEFT: THREE.MOUSE.ROTATE,
-      MIDDLE: THREE.MOUSE.ROTATE,
-      RIGHT: THREE.MOUSE.PAN
-    };
-    this.controls.touches = {
-      ONE: THREE.TOUCH.ROTATE,
-      TWO: THREE.TOUCH.DOLLY_PAN
-    };
+    this.controls.maxDistance = 135;
 
     this.hemiLight = new THREE.HemisphereLight('#ffffff', '#3d5a3c', 0.9);
     this.scene.add(this.hemiLight);
 
     this.dirLight = new THREE.DirectionalLight('#fff8eb', 1.4);
-    this.dirLight.position.set(28, 45, 24);
+    this.dirLight.position.set(30, 48, 25);
     this.dirLight.castShadow = true;
     this.dirLight.shadow.mapSize.width = 2048;
     this.dirLight.shadow.mapSize.height = 2048;
     this.dirLight.shadow.camera.near = 5;
-    this.dirLight.shadow.camera.far = 140;
-    const d = 42;
+    this.dirLight.shadow.camera.far = 150;
+    const d = 44;
     this.dirLight.shadow.camera.left = -d;
     this.dirLight.shadow.camera.right = d;
     this.dirLight.shadow.camera.top = d;
     this.dirLight.shadow.camera.bottom = -d;
     this.scene.add(this.dirLight);
 
-    // Підлога студії
     const table = new THREE.Mesh(
-      new THREE.PlaneGeometry(360, 360),
+      new THREE.PlaneGeometry(400, 400),
       new THREE.MeshStandardMaterial({ color: '#3B526E', roughness: 0.85 })
     );
     table.rotation.x = -Math.PI / 2;
@@ -956,30 +1080,28 @@ class DenysLegoGame {
 
     this.raycaster = new THREE.Raycaster();
     this.pointer = new THREE.Vector2();
+    this.dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     this.bricksGroup = new THREE.Group();
     this.scene.add(this.bricksGroup);
+
+    // Підсвітка вибраного об'єкта (рамка виділення)
+    this.selectionHelper = new THREE.Box3Helper(new THREE.Box3(), 0xffd500);
+    this.selectionHelper.visible = false;
+    this.scene.add(this.selectionHelper);
   }
 
   buildBaseplate(size) {
     this.gridSize = size;
-    if (this.baseplateGroup) {
-      this.scene.remove(this.baseplateGroup);
-    }
+    if (this.baseplateGroup) this.scene.remove(this.baseplateGroup);
     this.baseplateGroup = new THREE.Group();
 
-    const plateMat = new THREE.MeshPhysicalMaterial({
-      color: '#008C3A',
-      roughness: 0.3,
-      clearcoat: 0.25
-    });
-
+    const plateMat = new THREE.MeshPhysicalMaterial({ color: '#008C3A', roughness: 0.3, clearcoat: 0.25 });
     const base = new THREE.Mesh(new THREE.BoxGeometry(size, 0.3, size), plateMat);
     base.position.y = -0.15;
     base.receiveShadow = true;
     base.name = 'baseplate';
     this.baseplateGroup.add(base);
 
-    // InstancedMesh для ідеальної швидкості навіть на 64x64 (4096 шипів!)
     const studGeo = new THREE.CylinderGeometry(0.3, 0.3, 0.16, 10);
     const totalStuds = size * size;
     const instancedStuds = new THREE.InstancedMesh(studGeo, plateMat, totalStuds);
@@ -1003,16 +1125,14 @@ class DenysLegoGame {
     this.scene.add(this.baseplateGroup);
     this.baseHitMesh = base;
 
-    // Підлаштовуємо дистанцію камери під розмір пластини
     const dist = size * 0.92;
-    this.controls.maxDistance = size * 2.1;
+    this.controls.maxDistance = size * 2.2;
     this.setCameraView('iso', dist);
   }
 
   setCameraView(view, customDist = null) {
     this.autoOrbit = false;
     document.getElementById('btn-auto-orbit')?.classList.remove('active');
-
     const d = customDist || Math.max(16, this.gridSize * 0.88);
     const h = d * 0.65;
     const targets = {
@@ -1023,11 +1143,9 @@ class DenysLegoGame {
       top: new THREE.Vector3(0.01, d * 1.25, 0.01),
       iso: new THREE.Vector3(d * 0.78, h, d * 0.85)
     };
-
-    const dest = targets[view] || targets.iso;
     this.cameraTween = {
       startPos: this.camera.position.clone(),
-      endPos: dest,
+      endPos: targets[view] || targets.iso,
       progress: 0
     };
   }
@@ -1035,42 +1153,42 @@ class DenysLegoGame {
   cycleLighting() {
     this.lightingMode = (this.lightingMode + 1) % 3;
     const btn = document.getElementById('btn-lighting');
-
     if (this.lightingMode === 0) {
       this.scene.background.set('#7EC8E3');
       this.scene.fog.color.set('#7EC8E3');
       this.hemiLight.intensity = 0.9;
       this.dirLight.color.set('#fff8eb');
       this.dirLight.intensity = 1.4;
-      btn.innerHTML = '☀️ <span class="btn-txt">День</span>';
+      btn.textContent = '☀️ Освітлення: День';
     } else if (this.lightingMode === 1) {
       this.scene.background.set('#F59E0B');
       this.scene.fog.color.set('#D97706');
       this.hemiLight.intensity = 0.65;
       this.dirLight.color.set('#FF7E47');
       this.dirLight.intensity = 1.65;
-      btn.innerHTML = '🌅 <span class="btn-txt">Захід</span>';
+      btn.textContent = '🌅 Освітлення: Захід';
     } else {
       this.scene.background.set('#090D1A');
       this.scene.fog.color.set('#090D1A');
       this.hemiLight.intensity = 0.35;
       this.dirLight.color.set('#6366F1');
       this.dirLight.intensity = 0.65;
-      btn.innerHTML = '🌙 <span class="btn-txt">Ніч</span>';
+      btn.textContent = '🌙 Освітлення: Ніч';
     }
-
-    // Підсилюємо неонове світіння вікон та світлових мечів вночі
-    const glowStrength = this.lightingMode === 2 ? 1.5 : 0.45;
+    const glowStrength = this.lightingMode === 2 ? 1.55 : 0.45;
     this.bricksGroup.traverse(obj => {
-      if (obj.isMesh && obj.material && obj.material.userData?.isGlow) {
+      if (obj.isMesh && obj.material?.userData?.isGlow) {
         obj.material.emissiveIntensity = glowStrength;
       }
     });
   }
 
   createGhostMesh() {
-    if (this.ghostMesh) {
-      this.scene.remove(this.ghostMesh);
+    if (this.ghostMesh) this.scene.remove(this.ghostMesh);
+    if (this.selectedPart.items) {
+      // Для пресетів машин/будинків привид не потрібен — вони спавняться і вільно перетягуються!
+      this.ghostMesh = null;
+      return;
     }
     this.ghostMesh = createPartMesh(this.selectedPart, this.selectedColor, true);
     this.ghostMesh.rotation.y = (this.currentRotation * Math.PI) / 2;
@@ -1082,24 +1200,22 @@ class DenysLegoGame {
     return rot % 2 === 0 ? { w: part.w, d: part.d } : { w: part.d, d: part.w };
   }
 
-  snapCoordinates(rawX, rawZ, part, rot) {
+  snapCoordinates(rawX, rawZ, part, rot, ignoreSet = null) {
     const { w, d } = this.getEffectiveDims(part, rot);
     const half = this.gridSize / 2;
-
     const snapAxis = (val, dim) => {
       const snapped = dim % 2 === 1 ? Math.floor(val) + 0.5 : Math.round(val);
       const minC = -half + dim / 2;
       const maxC = half - dim / 2;
       return Math.max(minC, Math.min(maxC, snapped));
     };
-
     const x = snapAxis(rawX, w);
     const z = snapAxis(rawZ, d);
-    const y = this.computeStackHeight(x, z, w, d);
+    const y = this.computeStackHeight(x, z, w, d, ignoreSet);
     return { x, y, z };
   }
 
-  computeStackHeight(cx, cz, w, d) {
+  computeStackHeight(cx, cz, w, d, ignoreSet = null) {
     const minX = cx - w / 2 + 0.05;
     const maxX = cx + w / 2 - 0.05;
     const minZ = cz - d / 2 + 0.05;
@@ -1107,6 +1223,7 @@ class DenysLegoGame {
 
     let highestY = 0;
     for (const b of this.placedBricks) {
+      if (ignoreSet && ignoreSet.has(b)) continue;
       const dims = this.getEffectiveDims(b.part, b.rot);
       const bMinX = b.x - dims.w / 2;
       const bMaxX = b.x + dims.w / 2;
@@ -1121,7 +1238,7 @@ class DenysLegoGame {
     return Number(highestY.toFixed(2));
   }
 
-  placeBrick(part, color, x, y, z, rot, animateDrop = true) {
+  placeBrick(part, color, x, y, z, rot, animateDrop = true, groupId = null) {
     const mesh = createPartMesh(part, color, false);
     mesh.position.set(x, y, z);
     mesh.rotation.y = (rot * Math.PI) / 2;
@@ -1129,6 +1246,7 @@ class DenysLegoGame {
 
     const record = {
       id: crypto.randomUUID(),
+      groupId,
       part,
       color,
       x,
@@ -1147,12 +1265,147 @@ class DenysLegoGame {
         type: 'drop',
         mesh,
         targetY: y,
-        startY: y + 2.2,
+        startY: y + 2.0,
         progress: 0
       });
       this.spawnParticles(x, y + 0.2, z, color.hex);
     }
     return record;
+  }
+
+  // ==========================================
+  // 10. СПАВН ТА ВІЛЬНЕ ПЕРЕСУВАННЯ ПРЕСЕТІВ (МАШИН / БУДИНКІВ / НАБОРІВ)
+  // ==========================================
+  spawnPresetOnBoard(preset, offsetX = 0, offsetZ = 0, autoSelectForMove = true) {
+    const groupId = crypto.randomUUID();
+    const createdRecords = [];
+
+    preset.items.forEach(it => {
+      const part = BASE_PARTS.find(p => p.id === it.partId) || BASE_PARTS[0];
+      const color = LEGO_COLORS.find(c => c.hex === it.colorHex) || { name: 'Custom', hex: it.colorHex };
+      const bx = offsetX + it.x;
+      const bz = offsetZ + it.z;
+      const dims = this.getEffectiveDims(part, it.rot);
+      const by = this.computeStackHeight(bx, bz, dims.w, dims.d);
+      const rec = this.placeBrick(part, color, bx, by, bz, it.rot, true, groupId);
+      createdRecords.push(rec);
+    });
+
+    if (autoSelectForMove && createdRecords.length > 0) {
+      this.setToolMode('move');
+      this.moveWholeGroup = true;
+      document.getElementById('btn-move-scope').textContent = '🏠 Весь об\'єкт';
+      this.selectBrickOrGroup(createdRecords[0]);
+      this.showToast(`«${preset.name}» на полі! Тягни щоб перемістити.`);
+    }
+    return createdRecords;
+  }
+
+  selectBrickOrGroup(record) {
+    if (!record) {
+      this.clearSelection();
+      return;
+    }
+    if (this.moveWholeGroup && record.groupId) {
+      this.selectedBricks = this.placedBricks.filter(b => b.groupId === record.groupId);
+    } else {
+      this.selectedBricks = [record];
+    }
+    this.updateSelectionHelper();
+  }
+
+  clearSelection() {
+    this.selectedBricks = [];
+    this.selectionHelper.visible = false;
+  }
+
+  updateSelectionHelper() {
+    if (this.selectedBricks.length === 0) {
+      this.selectionHelper.visible = false;
+      return;
+    }
+    const box = new THREE.Box3();
+    this.selectedBricks.forEach(b => box.expandByObject(b.mesh));
+    this.selectionHelper.box.copy(box);
+    this.selectionHelper.visible = true;
+  }
+
+  moveSelectedBy(dx, dz) {
+    if (this.selectedBricks.length === 0) return;
+
+    const half = this.gridSize / 2;
+    // Перевіряємо чи не виходить за межі базової пластини
+    for (const b of this.selectedBricks) {
+      const dims = this.getEffectiveDims(b.part, b.rot);
+      const nx = b.x + dx;
+      const nz = b.z + dz;
+      if (nx - dims.w / 2 < -half || nx + dims.w / 2 > half || nz - dims.d / 2 < -half || nz + dims.d / 2 > half) {
+        return; // межа поля
+      }
+    }
+
+    const ignoreSet = new Set(this.selectedBricks);
+    // Знаходимо мінімальний Y вибраної групи (щоб зберегти поверхи будинку!)
+    const minBaseY = Math.min(...this.selectedBricks.map(b => b.y));
+
+    // Обчислюємо нову висоту опори під групою
+    let newBaseY = 0;
+    for (const b of this.selectedBricks) {
+      if (Math.abs(b.y - minBaseY) < 0.05) {
+        const dims = this.getEffectiveDims(b.part, b.rot);
+        const h = this.computeStackHeight(b.x + dx, b.z + dz, dims.w, dims.d, ignoreSet);
+        if (h > newBaseY) newBaseY = h;
+      }
+    }
+    const dy = newBaseY - minBaseY;
+
+    for (const b of this.selectedBricks) {
+      b.x += dx;
+      b.z += dz;
+      b.y = Number((b.y + dy).toFixed(2));
+      b.mesh.position.set(b.x, b.y, b.z);
+    }
+    this.updateSelectionHelper();
+  }
+
+  rotateSelected90() {
+    if (this.selectedBricks.length === 0) return;
+    // Центр обертання групи
+    let cx = 0;
+    let cz = 0;
+    this.selectedBricks.forEach(b => {
+      cx += b.x;
+      cz += b.z;
+    });
+    cx = Math.round((cx / this.selectedBricks.length) * 2) / 2;
+    cz = Math.round((cz / this.selectedBricks.length) * 2) / 2;
+
+    for (const b of this.selectedBricks) {
+      const relX = b.x - cx;
+      const relZ = b.z - cz;
+      // Поворот на 90° за годинниковою стрілкою: (x, z) -> (-z, x)
+      b.x = cx - relZ;
+      b.z = cz + relX;
+      b.rot = (b.rot + 1) % 4;
+      b.mesh.position.set(b.x, b.y, b.z);
+      b.mesh.rotation.y = (b.rot * Math.PI) / 2;
+    }
+    audio.playSnap(1.15);
+    this.updateSelectionHelper();
+  }
+
+  cloneSelected() {
+    if (this.selectedBricks.length === 0) return;
+    const newGroupId = crypto.randomUUID();
+    const clones = [];
+    for (const b of this.selectedBricks) {
+      const rec = this.placeBrick(b.part, b.color, b.x, b.y, b.z, b.rot, false, newGroupId);
+      clones.push(rec);
+    }
+    this.selectedBricks = clones;
+    this.moveSelectedBy(2, 2);
+    audio.playSnap(1.25);
+    this.showToast('Створено копію! Перетягни її на потрібне місце.');
   }
 
   removeBrick(record) {
@@ -1173,15 +1426,15 @@ class DenysLegoGame {
   spawnParticles(x, y, z, hex) {
     const geo = new THREE.BoxGeometry(0.14, 0.14, 0.14);
     const mat = new THREE.MeshBasicMaterial({ color: hex });
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 6; i++) {
       const p = new THREE.Mesh(geo, mat);
       p.position.set(x, y, z);
-      const angle = (Math.PI * 2 * i) / 8;
+      const angle = (Math.PI * 2 * i) / 6;
       this.scene.add(p);
       this.particles.push({
         mesh: p,
         vx: Math.cos(angle) * 0.08,
-        vy: 0.12 + Math.random() * 0.08,
+        vy: 0.11 + Math.random() * 0.07,
         vz: Math.sin(angle) * 0.08,
         life: 1.0
       });
@@ -1193,157 +1446,48 @@ class DenysLegoGame {
       this.bricksGroup.remove(this.bricksGroup.children[0]);
     }
     this.placedBricks = [];
+    this.clearSelection();
     this.isExploded = false;
     this.explodeProgress = 0;
     this.updateCounter();
-    if (!silent) this.showToast('Робоче поле очищено!');
+    if (!silent) this.showToast('Поле очищено!');
   }
 
-  // ==========================================
-  // 6. ГОТОВІ МАКЕТИ (ВКЛЮЧНО З МЕГА-МІСТОМ 64×64)
-  // ==========================================
-  buildBlueprint(type) {
-    if (type === 'megacity' && this.gridSize < 64) {
+  buildStarterMegaCity() {
+    if (this.gridSize < 64) {
       this.buildBaseplate(64);
-      document.querySelectorAll('.size-btn').forEach(b => {
-        b.classList.toggle('active', Number(b.dataset.size) === 64);
-      });
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.toggle('active', Number(b.dataset.size) === 64));
     }
-
     this.clearAll(true);
-    const cRed = LEGO_COLORS[0];
-    const cBlue = LEGO_COLORS[1];
-    const cYellow = LEGO_COLORS[2];
-    const cGreen = LEGO_COLORS[3];
-    const cOrange = LEGO_COLORS[5];
-    const cWhite = LEGO_COLORS[6];
-    const cBlack = LEGO_COLORS[7];
-    const cGray = LEGO_COLORS[8];
+
+    // Дорога 64x64
     const cDarkGray = LEGO_COLORS[9];
-    const cBrown = LEGO_COLORS[11];
-    const cGold = LEGO_COLORS[16];
-    const byId = id => PARTS_CATALOG.find(p => p.id === id);
-
-    const queue = [];
-    const add = (partId, color, x, z, rot = 0) => {
-      const part = byId(partId);
-      if (part) queue.push({ part, color, x, z, rot });
-    };
-
-    if (type === 'house') {
-      add('b_2x4', cWhite, -2, -2, 1);
-      add('b_2x4', cWhite, 2, -2, 1);
-      add('b_2x4', cWhite, -2, 2, 1);
-      add('b_2x4', cWhite, 2, 2, 1);
-      add('d_door', cBrown, 0, 2.5, 1);
-      add('d_win', cWhite, -2.5, 0, 0);
-      add('d_win', cWhite, 2.5, 0, 0);
-      add('b_2x4', cYellow, -2, -2, 1);
-      add('b_2x4', cYellow, 2, -2, 1);
-      add('b_2x4', cYellow, -2, 2, 1);
-      add('b_2x4', cYellow, 2, 2, 1);
-      add('r_2x4', cRed, -1, -1.5, 0);
-      add('r_2x4', cRed, 1, -1.5, 0);
-      add('r_2x4', cRed, -1, 1.5, 0);
-      add('r_2x4', cRed, 1, 1.5, 0);
-      add('dec_tree', cGreen, -5, 3, 0);
-      add('mf_001', cRed, 0, 5, 0);
-    } else if (type === 'car') {
-      add('d_wheel', cBlack, 0, -2, 0);
-      add('d_wheel', cBlack, 0, 2, 0);
-      add('p_2x4', cRed, 0, -1, 0);
-      add('p_2x4', cRed, 0, 2, 0);
-      add('b_2x2', cRed, 0, 0, 0);
-      add('s_2x2', cYellow, 0, -2, 2);
-      add('s_2x2', cWhite, 0, 1, 0);
-      add('t_2x2', cBlack, 0, 3, 0);
-      add('mf_007', cRed, 3, 0, 0);
-    } else if (type === 'castle') {
-      [-3, 3].forEach(x => {
-        [-3, 3].forEach(z => {
-          add('b_2x2', cGray, x, z, 0);
-          add('b_2x2', cDarkGray, x, z, 0);
-          add('b_2x2', cGray, x, z, 0);
-          add('b_1x1', cDarkGray, x - 0.5, z - 0.5, 0);
-          add('b_1x1', cDarkGray, x + 0.5, z + 0.5, 0);
-        });
-      });
-      add('a_1x4', cGray, 0, 3.5, 1);
-      add('a_1x4', cGray, 0, -3.5, 1);
-      add('dec_flag', cRed, 3, 3, 0);
-      add('mf_047', cGray, 0, 0, 0);
-    } else if (type === 'rocket') {
-      add('b_cyl2', cWhite, 0, 0, 0);
-      add('b_cyl2', cRed, 0, 0, 0);
-      add('b_cyl2', cWhite, 0, 0, 0);
-      add('b_cone', cRed, 0, 0, 0);
-      add('s_1x2', cBlue, -1.5, 0, 3);
-      add('s_1x2', cBlue, 1.5, 0, 1);
-      add('s_1x2', cBlue, 0, -1.5, 0);
-      add('s_1x2', cBlue, 0, 1.5, 2);
-      add('mf_023', cWhite, 3.5, 2, 0);
-    } else if (type === 'megacity') {
-      // Головна автострада 64x64
-      for (let z = -28; z <= 28; z += 4) {
-        add('t_2x4', cDarkGray, -1, z, 0);
-        add('t_2x4', cDarkGray, 1, z, 0);
-      }
-      // Хмарочос №1 (Ліворуч)
-      for (let floor = 0; floor < 6; floor++) {
-        add('b_2x4', cBlue, -14, -14, 0);
-        add('d_win4', cWhite, -12, -14, 0);
-        add('b_2x4', cBlue, -14, -10, 0);
-      }
-      add('r_2x4', cGold, -13, -12, 0);
-
-      // Хмарочос №2 (Праворуч)
-      for (let floor = 0; floor < 5; floor++) {
-        add('b_2x4', cRed, 14, -12, 0);
-        add('d_win4', cYellow, 12, -12, 0);
-      }
-      add('dec_flag', cYellow, 14, -12, 0);
-
-      // Поліцейська дільниця та пожежна
-      add('b_2x6', cWhite, -14, 12, 0);
-      add('d_door', cBlue, -12, 12.5, 0);
-      add('b_2x6', cOrange, 14, 12, 0);
-      add('d_door', cRed, 12, 12.5, 0);
-
-      // Спорткари на дорозі
-      add('d_wheel', cBlack, 0, -10, 0);
-      add('d_wheel', cBlack, 0, -6, 0);
-      add('p_2x4', cYellow, 0, -8, 0);
-      add('s_2x2', cRed, 0, -9, 2);
-
-      // Парк з деревами
-      [[-22, -4], [-22, 4], [22, -4], [22, 4], [-8, 22], [8, 22]].forEach(([tx, tz]) => {
-        add('dec_tree', cGreen, tx, tz, 0);
-      });
-
-      // Натовп з 12 різних фігурок у місті!
-      const crowd = [
-        ['mf_001', -6, -8], ['mf_002', -8, 12], ['mf_003', 8, 12],
-        ['mf_023', -5, 4], ['mf_045', 6, -4], ['mf_067', -4, 16],
-        ['mf_089', 5, 16], ['mf_111', 6, 4], ['mf_005', -18, 0],
-        ['mf_028', 18, 0], ['mf_050', 0, 20], ['mf_120', 0, -20]
-      ];
-      crowd.forEach(([id, mx, mz]) => add(id, cRed, mx, mz, 0));
+    for (let z = -28; z <= 28; z += 4) {
+      this.placeBrick(BASE_PARTS[10], cDarkGray, -1, 0, z, 0, false);
+      this.placeBrick(BASE_PARTS[10], cDarkGray, 1, 0, z, 0, false);
     }
 
-    const delay = type === 'megacity' ? 35 : 130;
-    queue.forEach((item, index) => {
-      setTimeout(() => {
-        const dims = this.getEffectiveDims(item.part, item.rot);
-        const y = this.computeStackHeight(item.x, item.z, dims.w, dims.d);
-        this.placeBrick(item.part, item.color, item.x, y, item.z, item.rot, true);
-      }, index * delay);
+    // Спавнимо 4 різні будинки + 4 круті машини + 6 фігурок (всі їх можна вільно пересувати!)
+    this.spawnPresetOnBoard(HOUSES_CATALOG[0], -14, -14, false);
+    this.spawnPresetOnBoard(HOUSES_CATALOG[7], 14, -14, false);
+    this.spawnPresetOnBoard(HOUSES_CATALOG[2], -14, 12, false);
+    this.spawnPresetOnBoard(HOUSES_CATALOG[5], 14, 12, false);
+
+    this.spawnPresetOnBoard(CARS_CATALOG[0], 0, -12, false);
+    this.spawnPresetOnBoard(CARS_CATALOG[10], 0, 0, false);
+    this.spawnPresetOnBoard(CARS_CATALOG[20], 0, 14, false);
+    this.spawnPresetOnBoard(EXTRA_SETS_CATALOG[0], -18, 0, false);
+
+    [0, 1, 22, 44, 66, 88].forEach((mIdx, k) => {
+      this.placeBrick(MINIFIG_CATALOG[mIdx], LEGO_COLORS[0], -6 + k * 2.5, 0, 6, 0, false);
     });
-    this.showToast(type === 'megacity' ? 'Будуємо Мега-Місто 64×64!' : 'Збираємо 3D-макет...');
+
+    this.showToast('Мега-Місто 64×64 готове! Натисни «✋ Рухати», щоб пересувати будинки й авто.');
   }
 
   loadLDrawModel(urlOrText, isText = false) {
     this.clearAll(true);
-    this.showToast('Завантаження з відкритої бази LDraw...');
+    this.showToast('Завантаження з бази LDraw...');
     const loader = new LDrawLoader();
     loader.setPartsLibraryPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/models/ldraw/officialLibrary/');
 
@@ -1353,77 +1497,70 @@ class DenysLegoGame {
       const size = new THREE.Vector3();
       box.getSize(size);
       const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      const scale = 12 / maxDim;
-      group.scale.setScalar(scale);
+      group.scale.setScalar(12 / maxDim);
 
       const scaledBox = new THREE.Box3().setFromObject(group);
       const center = new THREE.Vector3();
       scaledBox.getCenter(center);
       group.position.set(-center.x, -scaledBox.min.y, -center.z);
-
-      group.traverse(child => {
-        if (child.isMesh) {
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-
       this.bricksGroup.add(group);
-      this.showToast('Модель LDraw успішно завантажена!');
+      this.showToast('Модель LDraw завантажена!');
     };
 
-    if (isText) {
-      loader.parse(urlOrText, onLoaded);
-    } else {
-      loader.load(urlOrText, onLoaded, undefined, () => {
-        this.showToast('Помилка мережі. Завантаж локальний .LDR файл!');
-      });
-    }
+    if (isText) loader.parse(urlOrText, onLoaded);
+    else loader.load(urlOrText, onLoaded, undefined, () => this.showToast('Помилка мережі. Завантаж .LDR файл!'));
   }
 
   // ==========================================
-  // 7. ІНТЕРФЕЙС, МОБІЛЬНЕ КЕРУВАННЯ ТА ПОДІЇ
+  // 11. ІНТЕРФЕЙС, POPOVER-МЕНЮ ТА СЕНСОРНЕ КЕРУВАННЯ
   // ==========================================
+  setToolMode(mode) {
+    this.toolMode = mode;
+    document.querySelectorAll('#tool-build, #tool-move, #tool-paint, #tool-delete').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tool-${mode}`)?.classList.add('active');
+
+    const moveSub = document.getElementById('move-subbar');
+    moveSub.classList.toggle('hidden', mode !== 'move');
+
+    if (mode !== 'move') {
+      this.clearSelection();
+    }
+    if (this.ghostMesh) {
+      this.ghostMesh.visible = mode === 'build';
+    }
+  }
+
   initUI() {
     document.querySelectorAll('.size-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         this.buildBaseplate(Number(btn.dataset.size));
-        this.showToast(`Пластина ${btn.dataset.size}×${btn.dataset.size} готова!`);
       });
     });
 
-    const hideMenu = () => {
+    const enterGame = () => {
       document.getElementById('main-menu').classList.add('hidden');
       document.getElementById('hud').classList.remove('hidden');
     };
 
     document.getElementById('btn-start-sandbox').addEventListener('click', () => {
-      hideMenu();
-      this.showToast('Тягни для огляду 360°, клік/тап — поставити блок!');
+      enterGame();
+      this.showToast('Обирай блоки, 100 машин або 100 будинків знизу!');
     });
 
-    document.getElementById('btn-open-blueprints').addEventListener('click', () => {
-      document.getElementById('blueprints-panel').classList.toggle('hidden');
-      document.getElementById('ldraw-panel').classList.add('hidden');
+    document.getElementById('btn-start-city').addEventListener('click', () => {
+      enterGame();
+      this.buildStarterMegaCity();
     });
 
     document.getElementById('btn-open-ldraw').addEventListener('click', () => {
       document.getElementById('ldraw-panel').classList.toggle('hidden');
-      document.getElementById('blueprints-panel').classList.add('hidden');
-    });
-
-    document.querySelectorAll('.bp-card').forEach(btn => {
-      btn.addEventListener('click', () => {
-        hideMenu();
-        this.buildBlueprint(btn.dataset.bp);
-      });
     });
 
     document.querySelectorAll('.ldraw-remote-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        hideMenu();
+        enterGame();
         this.loadLDrawModel(btn.dataset.url, false);
       });
     });
@@ -1433,7 +1570,7 @@ class DenysLegoGame {
       if (!file) return;
       const reader = new FileReader();
       reader.onload = ev => {
-        hideMenu();
+        enterGame();
         this.loadLDrawModel(ev.target.result, true);
       };
       reader.readAsText(file);
@@ -1444,7 +1581,37 @@ class DenysLegoGame {
       document.getElementById('hud').classList.add('hidden');
     });
 
-    // 360° Камера-гізмо (ракурси з усіх сторін)
+    // Взаємовиключні спливаючі вікна у верхній панелі (Колір / Камера / Студія)
+    const popovers = [
+      { btn: 'toggle-colors-btn', pop: 'popover-colors' },
+      { btn: 'toggle-camera-btn', pop: 'popover-camera' },
+      { btn: 'toggle-studio-btn', pop: 'popover-studio' }
+    ];
+
+    const closeAllPopovers = () => {
+      popovers.forEach(({ btn, pop }) => {
+        document.getElementById(pop).classList.add('hidden');
+        document.getElementById(btn).classList.remove('open');
+      });
+    };
+
+    popovers.forEach(({ btn, pop }) => {
+      document.getElementById(btn).addEventListener('click', e => {
+        e.stopPropagation();
+        const isCurrentlyHidden = document.getElementById(pop).classList.contains('hidden');
+        closeAllPopovers();
+        if (isCurrentlyHidden) {
+          document.getElementById(pop).classList.remove('hidden');
+          document.getElementById(btn).classList.add('open');
+        }
+      });
+    });
+
+    document.querySelectorAll('.close-pop-btn').forEach(btn => {
+      btn.addEventListener('click', closeAllPopovers);
+    });
+
+    // Камера 360°
     document.querySelectorAll('.cam-btn').forEach(btn => {
       btn.addEventListener('click', () => this.setCameraView(btn.dataset.view));
     });
@@ -1453,7 +1620,6 @@ class DenysLegoGame {
     orbitBtn.addEventListener('click', () => {
       this.autoOrbit = !this.autoOrbit;
       orbitBtn.classList.toggle('active', this.autoOrbit);
-      this.showToast(this.autoOrbit ? 'Увімкнено 360° обліт споруди' : 'Обліт зупинено');
     });
 
     // Палітра кольорів
@@ -1467,133 +1633,98 @@ class DenysLegoGame {
         document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
         sw.classList.add('active');
         this.selectedColor = col;
+        document.getElementById('current-color-dot').style.background = col.hex;
         this.createGhostMesh();
-        this.renderBannerItems();
+        if (this.activeCategory === 'bricks') this.renderBannerItems();
       });
       paletteEl.appendChild(sw);
     });
 
-    // Категорії банера
-    document.querySelectorAll('.cat-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        this.activeCategory = tab.dataset.cat;
-
-        const mfSub = document.getElementById('minifig-subtabs');
-        mfSub.classList.toggle('hidden', this.activeCategory !== 'minifigs');
-
-        this.renderBannerItems();
-      });
+    // Інструменти режимів
+    document.getElementById('tool-build').addEventListener('click', () => this.setToolMode('build'));
+    document.getElementById('tool-move').addEventListener('click', () => {
+      this.setToolMode('move');
+      this.showToast('Натисни на машину, будинок або деталь і тягни!');
     });
-
-    // Підфільтри 132 мініфігурок
-    document.querySelectorAll('.mf-filter').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.mf-filter').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this.activeMfFilter = btn.dataset.mf;
-        this.renderBannerItems();
-      });
-    });
-
-    document.getElementById('part-search').addEventListener('input', () => this.renderBannerItems());
-
-    const spawnCenterAction = () => {
-      const { x, y, z } = this.snapCoordinates(0, 0, this.selectedPart, this.currentRotation);
-      this.placeBrick(this.selectedPart, this.selectedColor, x, y, z, this.currentRotation, true);
-    };
-    document.getElementById('btn-spawn-center').addEventListener('click', spawnCenterAction);
-
-    // Мобільні кнопки швидкої дії
-    document.getElementById('mob-place').addEventListener('click', () => {
-      if (this.ghostMesh && this.ghostMesh.visible) {
-        const { x, y, z } = this.ghostMesh.position;
-        this.placeBrick(this.selectedPart, this.selectedColor, x, y, z, this.currentRotation, true);
-      } else {
-        spawnCenterAction();
-      }
-    });
-
-    const toggleBannerBtn = document.getElementById('mob-toggle-banner');
-    toggleBannerBtn.addEventListener('click', () => {
-      const banner = document.getElementById('parts-banner');
-      const dock = document.querySelector('.mobile-action-dock');
-      const collapsed = banner.classList.toggle('collapsed');
-      dock.classList.toggle('banner-closed', collapsed);
-      toggleBannerBtn.textContent = collapsed ? '🔼 Деталі' : '🔽 Сховати';
-    });
-
-    // Інструменти
-    const setTool = mode => {
-      this.toolMode = mode;
-      document.querySelectorAll('#tool-build, #tool-paint, #tool-delete').forEach(b => b.classList.remove('active'));
-      document.getElementById(`tool-${mode}`).classList.add('active');
-      if (this.ghostMesh) this.ghostMesh.visible = mode === 'build';
-    };
-
-    document.getElementById('tool-build').addEventListener('click', () => setTool('build'));
-    document.getElementById('tool-paint').addEventListener('click', () => setTool('paint'));
-    document.getElementById('tool-delete').addEventListener('click', () => setTool('delete'));
+    document.getElementById('tool-paint').addEventListener('click', () => this.setToolMode('paint'));
+    document.getElementById('tool-delete').addEventListener('click', () => this.setToolMode('delete'));
 
     const rotateAction = () => {
-      this.currentRotation = (this.currentRotation + 1) % 4;
-      if (this.ghostMesh) {
-        this.ghostMesh.rotation.y = (this.currentRotation * Math.PI) / 2;
+      if (this.toolMode === 'move' && this.selectedBricks.length > 0) {
+        this.rotateSelected90();
+        return;
       }
+      this.currentRotation = (this.currentRotation + 1) % 4;
+      if (this.ghostMesh) this.ghostMesh.rotation.y = (this.currentRotation * Math.PI) / 2;
     };
     document.getElementById('btn-rotate').addEventListener('click', rotateAction);
-    document.getElementById('mob-rotate').addEventListener('click', rotateAction);
 
-    const undoAction = () => {
-      if (this.placedBricks.length === 0) return;
-      this.removeBrick(this.placedBricks[this.placedBricks.length - 1]);
-    };
-    document.getElementById('btn-undo').addEventListener('click', undoAction);
-
-    // Вибух-схема
-    const explodeBtn = document.getElementById('btn-explode');
-    explodeBtn.addEventListener('click', () => {
-      if (this.placedBricks.length === 0) return;
-      this.isExploded = !this.isExploded;
-      explodeBtn.classList.toggle('active', this.isExploded);
-      audio.playSnap(this.isExploded ? 1.3 : 0.8);
-      this.showToast(this.isExploded ? 'Вибух-схема: огляд внутрішніх шарів!' : 'Деталі зібрано назад!');
+    // Керування переміщенням (Весь об'єкт vs Деталь, Стрілки, Копія)
+    const scopeBtn = document.getElementById('btn-move-scope');
+    scopeBtn.addEventListener('click', () => {
+      this.moveWholeGroup = !this.moveWholeGroup;
+      scopeBtn.textContent = this.moveWholeGroup ? '🏠 Весь об\'єкт' : '🧱 Одна деталь';
+      if (this.selectedBricks.length > 0) {
+        this.selectBrickOrGroup(this.selectedBricks[0]);
+      }
     });
 
-    // Освітлення (День / Захід / Ніч)
+    document.querySelectorAll('.nudge-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        this.moveSelectedBy(Number(btn.dataset.dx), Number(btn.dataset.dz));
+        audio.playSnap(1.05);
+      });
+    });
+
+    document.getElementById('btn-clone-selected').addEventListener('click', () => this.cloneSelected());
+    document.getElementById('btn-deselect').addEventListener('click', () => {
+      this.clearSelection();
+      audio.playSnap(1.2);
+      this.showToast('Позицію зафіксовано!');
+    });
+
+    // Undo / Clear / Save / Load / Lighting / Explode / Photo
+    document.getElementById('btn-undo').addEventListener('click', () => {
+      if (this.placedBricks.length > 0) this.removeBrick(this.placedBricks[this.placedBricks.length - 1]);
+    });
+    document.getElementById('btn-clear').addEventListener('click', () => {
+      this.clearAll();
+      closeAllPopovers();
+    });
     document.getElementById('btn-lighting').addEventListener('click', () => this.cycleLighting());
-
-    // Фото-студія (скріншот PNG)
+    document.getElementById('btn-explode').addEventListener('click', e => {
+      this.isExploded = !this.isExploded;
+      e.target.classList.toggle('active', this.isExploded);
+    });
     document.getElementById('btn-photo').addEventListener('click', () => {
+      closeAllPopovers();
       if (this.ghostMesh) this.ghostMesh.visible = false;
+      this.selectionHelper.visible = false;
       this.renderer.render(this.scene, this.camera);
-      const link = document.createElement('a');
-      link.download = 'DENYS-HANDZIUK-LEGO-PHOTO.png';
-      link.href = this.renderer.domElement.toDataURL('image/png');
-      link.click();
+      const a = document.createElement('a');
+      a.download = 'DENYS-HANDZIUK-LEGO.png';
+      a.href = this.renderer.domElement.toDataURL('image/png');
+      a.click();
       if (this.ghostMesh && this.toolMode === 'build') this.ghostMesh.visible = true;
-      this.showToast('📸 Студійне фото моделі збережено!');
+      this.updateSelectionHelper();
+      this.showToast('📸 Фото моделі збережено!');
     });
 
-    document.getElementById('btn-clear').addEventListener('click', () => this.clearAll());
-
-    // Збереження / Відкриття JSON
     document.getElementById('btn-save').addEventListener('click', () => {
       const data = this.placedBricks.map(b => ({
         partId: b.part.id,
+        groupId: b.groupId,
         colorHex: b.color.hex,
         x: b.x,
         y: b.y,
         z: b.z,
         rot: b.rot
       }));
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'denys-handziuk-lego.json';
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      a.download = 'denys-handziuk-lego-city.json';
       a.click();
-      this.showToast('Модель збережено!');
+      this.showToast('Місто збережено!');
     });
 
     document.getElementById('json-load-input').addEventListener('change', e => {
@@ -1604,69 +1735,234 @@ class DenysLegoGame {
         const items = JSON.parse(ev.target.result);
         this.clearAll(true);
         items.forEach(it => {
-          const part = PARTS_CATALOG.find(p => p.id === it.partId) || PARTS_CATALOG[0];
+          const part = ALL_ITEMS.find(p => p.id === it.partId) || BASE_PARTS[0];
           const color = LEGO_COLORS.find(c => c.hex === it.colorHex) || { name: 'Custom', hex: it.colorHex };
-          this.placeBrick(part, color, it.x, it.y, it.z, it.rot, false);
+          this.placeBrick(part, color, it.x, it.y, it.z, it.rot, false, it.groupId || null);
         });
-        this.showToast('Збережену споруду завантажено!');
+        this.showToast('Збережений проект відкрито!');
       };
       reader.readAsText(file);
     });
 
-    window.addEventListener('keydown', e => {
-      if (e.code === 'KeyR') rotateAction();
-      if (e.ctrlKey && e.code === 'KeyZ') undoAction();
+    // Категорії нижнього банера та динамічні підфільтри
+    document.querySelectorAll('.cat-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        this.activeCategory = tab.dataset.cat;
+        this.activeSubFilter = 'all';
+        this.renderSubFilters();
+        this.renderBannerItems();
+      });
     });
 
-    // Розумна обробка миші та сенсорного екрану (відрізняє клік/тап від обертання 360°)
+    document.getElementById('part-search').addEventListener('input', () => this.renderBannerItems());
+
+    document.getElementById('btn-spawn-center').addEventListener('click', () => {
+      if (this.selectedPart.items) {
+        // Знаходимо вільніше зміщення навколо центру, щоб пресети не накладалися
+        const spread = (this.placedBricks.length % 7 - 3) * 3;
+        this.spawnPresetOnBoard(this.selectedPart, spread, spread, true);
+      } else {
+        const { x, y, z } = this.snapCoordinates(0, 0, this.selectedPart, this.currentRotation);
+        this.placeBrick(this.selectedPart, this.selectedColor, x, y, z, this.currentRotation, true);
+      }
+    });
+
+    const collapseBtn = document.getElementById('btn-collapse-banner');
+    collapseBtn.addEventListener('click', () => {
+      const collapsed = document.getElementById('parts-banner').classList.toggle('collapsed');
+      collapseBtn.textContent = collapsed ? '🔼' : '🔽';
+    });
+
+    window.addEventListener('keydown', e => {
+      if (e.code === 'KeyR') rotateAction();
+      if (e.code === 'ArrowUp') this.moveSelectedBy(0, -1);
+      if (e.code === 'ArrowDown') this.moveSelectedBy(0, 1);
+      if (e.code === 'ArrowLeft') this.moveSelectedBy(-1, 0);
+      if (e.code === 'ArrowRight') this.moveSelectedBy(1, 0);
+    });
+
+    // Сенсорне та мишаче керування (перетягування об'єктів + клік + 360° камера)
     const canvas = this.renderer.domElement;
     let downX = 0;
     let downY = 0;
     let downTime = 0;
 
-    canvas.addEventListener('pointermove', e => this.updateGhostFromPointer(e));
-
     canvas.addEventListener('pointerdown', e => {
+      closeAllPopovers();
       downX = e.clientX;
       downY = e.clientY;
       downTime = performance.now();
+
+      if (this.toolMode === 'move' && e.button === 0) {
+        const hit = this.getRaycastHit(e);
+        const hitRec = hit ? this.findRecordFromObject(hit.object) : null;
+        if (hitRec) {
+          // Якщо клікнули на вже вибраний об'єкт або новий — починаємо перетягування!
+          if (!this.selectedBricks.includes(hitRec)) {
+            this.selectBrickOrGroup(hitRec);
+          }
+          this.isDraggingSelection = true;
+          this.controls.enabled = false; // Блокуємо камеру поки тягнемо будинок/машину!
+          this.dragPlane.constant = -hit.point.y;
+          this.dragAnchorPoint.copy(hit.point);
+          return;
+        }
+      }
+
+      this.updateGhostFromPointer(e);
+    });
+
+    canvas.addEventListener('pointermove', e => {
+      if (this.isDraggingSelection && this.selectedBricks.length > 0) {
+        const rect = canvas.getBoundingClientRect();
+        this.pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        this.pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        this.raycaster.setFromCamera(this.pointer, this.camera);
+
+        const target = new THREE.Vector3();
+        if (this.raycaster.ray.intersectPlane(this.dragPlane, target)) {
+          const dx = Math.round(target.x - this.dragAnchorPoint.x);
+          const dz = Math.round(target.z - this.dragAnchorPoint.z);
+          if (dx !== 0 || dz !== 0) {
+            this.moveSelectedBy(dx, dz);
+            this.dragAnchorPoint.x += dx;
+            this.dragAnchorPoint.z += dz;
+          }
+        }
+        return;
+      }
+
       this.updateGhostFromPointer(e);
     });
 
     canvas.addEventListener('pointerup', e => {
+      if (this.isDraggingSelection) {
+        this.isDraggingSelection = false;
+        this.controls.enabled = true;
+        audio.playSnap(1.05);
+        return;
+      }
+
       const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
       const elapsed = performance.now() - downTime;
-
-      // Якщо це короткий клік/тап без перетягування камери:
-      if (dist < 10 && elapsed < 350) {
+      if (dist < 10 && elapsed < 360) {
         this.handleCanvasTap(e);
       }
     });
 
     canvas.addEventListener('contextmenu', e => e.preventDefault());
-
     window.addEventListener('resize', () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
+    this.renderSubFilters();
     this.renderBannerItems();
   }
 
-  getMinifigCardSVG(part) {
-    const cfg = part.mfConfig;
-    return `
-      <svg width="46" height="42" viewBox="0 0 46 42">
-        <rect x="13" y="29" width="8" height="11" rx="1.5" fill="${cfg.legColor}" stroke="#fff" stroke-width="0.8"/>
-        <rect x="25" y="29" width="8" height="11" rx="1.5" fill="${cfg.legColor}" stroke="#fff" stroke-width="0.8"/>
-        <rect x="11" y="15" width="24" height="14" rx="2.5" fill="${cfg.torsoColor}" stroke="#fff" stroke-width="0.9"/>
-        <rect x="16" y="5" width="14" height="10" rx="3" fill="${cfg.headColor}" stroke="#111" stroke-width="0.8"/>
-        <circle cx="20" cy="9" r="1.2" fill="#111"/>
-        <circle cx="26" cy="9" r="1.2" fill="#111"/>
-        <rect x="14" y="2" width="18" height="4" rx="1.5" fill="${cfg.torsoColor}"/>
-      </svg>
-    `;
+  renderSubFilters() {
+    const bar = document.getElementById('subfilter-bar');
+    const filtersMap = {
+      bricks: [
+        { id: 'all', label: 'Усі блоки' },
+        { id: 'cubes', label: 'Кубики' },
+        { id: 'plates', label: 'Пластини' },
+        { id: 'slopes', label: 'Скоси/Дахи' },
+        { id: 'special', label: 'Вікна/Колеса/Декор' }
+      ],
+      cars: [
+        { id: 'all', label: 'Усі (100)' },
+        { id: 'sport', label: 'Спорткари' },
+        { id: 'police', label: 'Поліція' },
+        { id: 'fire', label: 'Пожежні' },
+        { id: 'jeep', label: 'Джипи' },
+        { id: 'truck', label: 'Вантажівки' },
+        { id: 'f1', label: 'Боліди F1' },
+        { id: 'cyber', label: 'Кібер' },
+        { id: 'bus', label: 'Автобуси' }
+      ],
+      houses: [
+        { id: 'all', label: 'Усі (100)' },
+        { id: 'f1', label: '1 Поверх' },
+        { id: 'f2', label: '2 Поверхи' },
+        { id: 'f3', label: '3 Поверхи' }
+      ],
+      sets: [
+        { id: 'all', label: 'Усі (32)' },
+        { id: 'air', label: 'Гелікоптери' },
+        { id: 'space', label: 'Космос' },
+        { id: 'city_decor', label: 'Місто і Парк' },
+        { id: 'mech_boat', label: 'Роботи і Катери' }
+      ],
+      minifigs: [
+        { id: 'all', label: 'Усі (132)' },
+        { id: 'city', label: 'Місто' },
+        { id: 'space', label: 'Космос' },
+        { id: 'castle', label: 'Лицарі' },
+        { id: 'ninja', label: 'Ніндзя' },
+        { id: 'pirate', label: 'Пірати' },
+        { id: 'hero', label: 'Герої' }
+      ]
+    };
+
+    const list = filtersMap[this.activeCategory] || [];
+    bar.innerHTML = '';
+    list.forEach(f => {
+      const btn = document.createElement('button');
+      btn.className = 'sub-pill' + (this.activeSubFilter === f.id ? ' active' : '');
+      btn.textContent = f.label;
+      btn.addEventListener('click', () => {
+        this.activeSubFilter = f.id;
+        this.renderSubFilters();
+        this.renderBannerItems();
+      });
+      bar.appendChild(btn);
+    });
+  }
+
+  getCardIconHTML(item) {
+    if (item.cat === 'cars') {
+      return `<svg width="56" height="36" viewBox="0 0 56 36">
+        <rect x="6" y="15" width="44" height="10" rx="3" fill="${item.primaryColor}" stroke="#fff" stroke-width="1.2"/>
+        <rect x="16" y="8" width="22" height="8" rx="2" fill="${item.secondaryColor}" stroke="#fff" stroke-width="1"/>
+        <circle cx="16" cy="26" r="5" fill="#18181B" stroke="#C0C5CE" stroke-width="1.5"/>
+        <circle cx="40" cy="26" r="5" fill="#18181B" stroke="#C0C5CE" stroke-width="1.5"/>
+      </svg>`;
+    }
+    if (item.cat === 'houses') {
+      const h = item.floors === 3 ? 22 : (item.floors === 2 ? 17 : 12);
+      const y = 32 - h;
+      return `<svg width="56" height="36" viewBox="0 0 56 36">
+        <polygon points="8,${y} 28,3 48,${y}" fill="${item.secondaryColor}" stroke="#fff" stroke-width="1"/>
+        <rect x="12" y="${y}" width="32" height="${h}" fill="${item.primaryColor}" stroke="#fff" stroke-width="1"/>
+        <rect x="24" y="22" width="8" height="10" fill="#6B3E26"/>
+        <rect x="15" y="${y + 3}" width="6" height="5" fill="#88D8FF"/>
+        <rect x="35" y="${y + 3}" width="6" height="5" fill="#88D8FF"/>
+      </svg>`;
+    }
+    if (item.cat === 'sets') {
+      return `<svg width="56" height="36" viewBox="0 0 56 36">
+        <rect x="12" y="12" width="32" height="16" rx="4" fill="${item.primaryColor}" stroke="#fff" stroke-width="1.2"/>
+        <polygon points="28,4 38,12 18,12" fill="${item.secondaryColor}"/>
+      </svg>`;
+    }
+    if (item.cat === 'minifigs') {
+      const cfg = item.mfConfig;
+      return `<svg width="46" height="38" viewBox="0 0 46 38">
+        <rect x="13" y="26" width="8" height="10" rx="1.5" fill="${cfg.legColor}"/>
+        <rect x="25" y="26" width="8" height="10" rx="1.5" fill="${cfg.legColor}"/>
+        <rect x="11" y="13" width="24" height="13" rx="2.5" fill="${cfg.torsoColor}" stroke="#fff" stroke-width="0.8"/>
+        <rect x="16" y="4" width="14" height="9" rx="3" fill="${cfg.headColor}"/>
+      </svg>`;
+    }
+    return `<svg width="48" height="36" viewBox="0 0 48 36">
+      <rect x="6" y="10" width="36" height="20" rx="3" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.4"/>
+      <rect x="11" y="5" width="8" height="5" rx="1" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.1"/>
+      <rect x="29" y="5" width="8" height="5" rx="1" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.1"/>
+    </svg>`;
   }
 
   renderBannerItems() {
@@ -1674,40 +1970,35 @@ class DenysLegoGame {
     const query = document.getElementById('part-search').value.trim().toLowerCase();
     container.innerHTML = '';
 
-    const filtered = PARTS_CATALOG.filter(p => {
-      if (query) return p.name.toLowerCase().includes(query);
-      if (this.activeCategory === 'minifigs') {
-        if (p.cat !== 'minifigs') return false;
-        if (this.activeMfFilter !== 'all' && p.subCat !== this.activeMfFilter) return false;
-        return true;
-      }
-      return p.cat === this.activeCategory;
+    const filtered = ALL_ITEMS.filter(item => {
+      if (query) return item.name.toLowerCase().includes(query);
+      if (item.cat !== this.activeCategory) return false;
+      if (this.activeSubFilter !== 'all' && item.subCat !== this.activeSubFilter) return false;
+      return true;
     });
 
-    filtered.forEach(part => {
+    filtered.forEach(item => {
       const card = document.createElement('div');
-      card.className = 'part-card' + (this.selectedPart.id === part.id ? ' active' : '');
-
-      const iconHTML = part.shape === 'minifig'
-        ? this.getMinifigCardSVG(part)
-        : `<svg width="48" height="36" viewBox="0 0 48 36">
-            <rect x="6" y="10" width="36" height="20" rx="3" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.5"/>
-            <rect x="11" y="5" width="8" height="5" rx="1" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.2"/>
-            <rect x="29" y="5" width="8" height="5" rx="1" fill="${this.selectedColor.hex}" stroke="#fff" stroke-width="1.2"/>
-          </svg>`;
+      card.className = 'part-card' + (this.selectedPart.id === item.id ? ' active' : '');
+      const dimsLabel = item.cat === 'minifigs' ? 'Фігурка'
+        : (item.cat === 'houses' ? `${item.floors} пов. • ${item.w}×${item.d}` : `${item.w}×${item.d}`);
 
       card.innerHTML = `
-        <div class="part-icon">${iconHTML}</div>
-        <div class="part-name">${part.name}</div>
-        <div class="part-dims">${part.shape === 'minifig' ? '3D Фігурка' : `${part.w}×${part.d}`}</div>
+        <div class="part-icon">${this.getCardIconHTML(item)}</div>
+        <div class="part-name">${item.name}</div>
+        <div class="part-dims">${dimsLabel}</div>
       `;
 
       card.addEventListener('click', () => {
-        this.selectedPart = part;
-        this.toolMode = 'build';
-        document.querySelectorAll('#tool-build, #tool-paint, #tool-delete').forEach(b => b.classList.remove('active'));
-        document.getElementById('tool-build').classList.add('active');
-        this.createGhostMesh();
+        this.selectedPart = item;
+        if (item.items) {
+          // Якщо це Машина, Будинок або Набір — одразу спавнимо на поле і вмикаємо режим вільного пересування!
+          const spread = ((this.placedBricks.length % 5) - 2) * 3;
+          this.spawnPresetOnBoard(item, spread, spread, true);
+        } else {
+          this.setToolMode('build');
+          this.createGhostMesh();
+        }
         this.renderBannerItems();
       });
       container.appendChild(card);
@@ -1728,7 +2019,7 @@ class DenysLegoGame {
   findRecordFromObject(obj) {
     let curr = obj;
     while (curr) {
-      if (curr.userData && curr.userData.brickRecord) return curr.userData.brickRecord;
+      if (curr.userData?.brickRecord) return curr.userData.brickRecord;
       curr = curr.parent;
     }
     return null;
@@ -1741,14 +2032,10 @@ class DenysLegoGame {
       this.ghostMesh.visible = false;
       return;
     }
-
     this.ghostMesh.visible = true;
-    const normal = hit.face
-      ? hit.face.normal.clone().transformDirection(hit.object.matrixWorld)
-      : new THREE.Vector3(0, 1, 0);
+    const normal = hit.face ? hit.face.normal.clone().transformDirection(hit.object.matrixWorld) : new THREE.Vector3(0, 1, 0);
     const offset = normal.y > 0.5 ? 0.05 : 0.48;
     const targetPoint = hit.point.clone().addScaledVector(normal, offset);
-
     const snapped = this.snapCoordinates(targetPoint.x, targetPoint.z, this.selectedPart, this.currentRotation);
     this.ghostMesh.position.set(snapped.x, snapped.y, snapped.z);
   }
@@ -1756,11 +2043,15 @@ class DenysLegoGame {
   handleCanvasTap(e) {
     const hit = this.getRaycastHit(e);
     if (!hit) return;
-
     const hitRecord = this.findRecordFromObject(hit.object);
 
     if (e.button === 2 || (e.button === 0 && this.toolMode === 'delete')) {
       if (hitRecord) this.removeBrick(hitRecord);
+      return;
+    }
+
+    if (e.button === 0 && this.toolMode === 'move') {
+      this.selectBrickOrGroup(hitRecord);
       return;
     }
 
@@ -1769,14 +2060,19 @@ class DenysLegoGame {
         const idx = this.placedBricks.indexOf(hitRecord);
         this.bricksGroup.remove(hitRecord.mesh);
         this.placedBricks.splice(idx, 1);
-        this.placeBrick(hitRecord.part, this.selectedColor, hitRecord.x, hitRecord.y, hitRecord.z, hitRecord.rot, true);
+        this.placeBrick(hitRecord.part, this.selectedColor, hitRecord.x, hitRecord.y, hitRecord.z, hitRecord.rot, true, hitRecord.groupId);
       }
       return;
     }
 
     if (e.button === 0 && this.toolMode === 'build') {
+      if (this.selectedPart.items) {
+        const snapped = this.snapCoordinates(hit.point.x, hit.point.z, { w: 2, d: 2 }, 0);
+        this.spawnPresetOnBoard(this.selectedPart, snapped.x, snapped.z, true);
+        return;
+      }
       this.updateGhostFromPointer(e);
-      if (this.ghostMesh && this.ghostMesh.visible) {
+      if (this.ghostMesh?.visible) {
         const { x, y, z } = this.ghostMesh.position;
         this.placeBrick(this.selectedPart, this.selectedColor, x, y, z, this.currentRotation, true);
       }
@@ -1792,13 +2088,12 @@ class DenysLegoGame {
     el.textContent = msg;
     el.classList.remove('hidden');
     clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => el.classList.add('hidden'), 2300);
+    this.toastTimer = setTimeout(() => el.classList.add('hidden'), 2400);
   }
 
   animate() {
     requestAnimationFrame(() => this.animate());
 
-    // Плавний переліт камери при натисканні кнопок огляду
     if (this.cameraTween) {
       this.cameraTween.progress += 0.065;
       const t = Math.min(1, this.cameraTween.progress);
@@ -1808,7 +2103,6 @@ class DenysLegoGame {
       if (t >= 1) this.cameraTween = null;
     }
 
-    // Автоматичний 360° обліт споруди
     if (this.autoOrbit) {
       const angle = 0.008;
       const x = this.camera.position.x;
@@ -1819,7 +2113,6 @@ class DenysLegoGame {
 
     this.controls.update();
 
-    // Плавна анімація "Вибух-схеми"
     const targetExplode = this.isExploded ? 1 : 0;
     if (Math.abs(this.explodeProgress - targetExplode) > 0.005) {
       this.explodeProgress += (targetExplode - this.explodeProgress) * 0.1;
@@ -1828,16 +2121,14 @@ class DenysLegoGame {
       }
     }
 
-    // Анімації встановлення та видалення блоків
     for (let i = this.animations.length - 1; i >= 0; i--) {
       const anim = this.animations[i];
-      anim.progress += 0.09;
-
+      anim.progress += 0.095;
       if (anim.type === 'drop') {
         const t = Math.min(1, anim.progress);
         const ease = 1 - Math.pow(1 - t, 3);
         anim.mesh.position.y = anim.startY + (anim.targetY - anim.startY) * ease;
-        const squash = t < 0.8 ? 1 : 1 - Math.sin((t - 0.8) * Math.PI * 5) * 0.07;
+        const squash = t < 0.8 ? 1 : 1 - Math.sin((t - 0.8) * Math.PI * 5) * 0.06;
         anim.mesh.scale.set(1 + (1 - squash) * 0.5, squash, 1 + (1 - squash) * 0.5);
         if (t >= 1) {
           anim.mesh.position.y = anim.targetY;
@@ -1856,14 +2147,13 @@ class DenysLegoGame {
       }
     }
 
-    // Частинки при клацанні деталей
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.mesh.position.x += p.vx;
       p.mesh.position.y += p.vy;
       p.mesh.position.z += p.vz;
       p.vy -= 0.012;
-      p.life -= 0.045;
+      p.life -= 0.05;
       p.mesh.scale.setScalar(Math.max(0.01, p.life));
       if (p.life <= 0) {
         this.scene.remove(p.mesh);
