@@ -6,7 +6,7 @@ import { LDrawLoader } from 'three/addons/loaders/LDrawLoader.js';
 // 1. КОНСТАНТИ ТА ПАЛІТРА КОЛЬОРІВ LEGO
 // ==========================================
 const STUD_SIZE = 1.0;
-const PLATE_HEIGHT = 0.4;
+const PLATE_HEIGHT = 0.4; // 1 пластина = 0.4, 1 стандартний кубик = 3 пластини = 1.2
 
 const LEGO_COLORS = [
   { name: 'Яскраво-червоний', hex: '#E3000B' },
@@ -32,7 +32,7 @@ const LEGO_COLORS = [
 ];
 
 // ==========================================
-// 2. БАЗОВІ ДЕТАЛІ LEGO (КУБИКИ, ПЛАСТИНИ, СКОСИ, ВІКНА)
+// 2. БАЗОВІ ДЕТАЛІ LEGO
 // ==========================================
 const BASE_PARTS = [
   { id: 'b_1x1', name: 'Кубик 1×1', subCat: 'cubes', w: 1, d: 1, hPlates: 3, shape: 'brick' },
@@ -71,7 +71,7 @@ const BASE_PARTS = [
 
   { id: 'd_win', name: 'Вікно 1×2×2', subCat: 'special', w: 1, d: 2, hPlates: 6, shape: 'window' },
   { id: 'd_win4', name: 'Панорама 1×4×2', subCat: 'special', w: 1, d: 4, hPlates: 6, shape: 'window' },
-  { id: 'd_door', name: 'Двері 1×3×3', subCat: 'special', w: 1, d: 3, hPlates: 9, shape: 'door' },
+  { id: 'd_door', name: 'Двері 1×2×2', subCat: 'special', w: 1, d: 2, hPlates: 6, shape: 'door' },
   { id: 'd_wheel', name: 'Колесо 2×2', subCat: 'special', w: 2, d: 2, hPlates: 3, shape: 'wheel' },
   { id: 'd_fence', name: 'Паркан 1×4', subCat: 'special', w: 1, d: 4, hPlates: 3, shape: 'fence' },
   { id: 'dec_tree', name: 'Ялинка 2×2', subCat: 'special', w: 2, d: 2, hPlates: 9, shape: 'tree' },
@@ -218,20 +218,20 @@ function generate132Minifigures() {
 }
 
 // ==========================================
-// 4. ГЕНЕРАТОР 100 КРУТИХ МАШИН (PRESETS)
+// 4. ГЕНЕРАТОР 100 РЕАЛІСТИЧНИХ МАШИН З ТОЧНИМИ КООРДИНАТАМИ
 // ==========================================
 function generate100Cars() {
   const carClasses = [
-    { type: 'sport', label: 'Спорткар', len: 6, siren: null, bed: 'spoiler' },
-    { type: 'police', label: 'Поліція', len: 6, siren: 'blue_red', bed: 'trunk' },
-    { type: 'fire', label: 'Пожежна', len: 8, siren: 'red', bed: 'tanker' },
-    { type: 'ambulance', label: 'Швидка', len: 8, siren: 'blue', bed: 'box' },
-    { type: 'jeep', label: 'Джип 4×4', len: 6, siren: null, bed: 'rack' },
-    { type: 'truck', label: 'Вантажівка', len: 8, siren: 'orange', bed: 'cargo' },
-    { type: 'f1', label: 'Болід F1', len: 6, siren: null, bed: 'wing' },
-    { type: 'cabrio', label: 'Кабріолет', len: 6, siren: null, bed: 'open' },
-    { type: 'cyber', label: 'Кібер-Пікап', len: 8, siren: null, bed: 'cyber' },
-    { type: 'bus', label: 'Автобус', len: 10, siren: null, bed: 'bus' }
+    { type: 'sport', label: 'Спорткар', len: 6, siren: null, style: 'sport' },
+    { type: 'police', label: 'Поліція', len: 6, siren: 'police', style: 'sedan' },
+    { type: 'fire', label: 'Пожежна', len: 8, siren: 'red', style: 'truck' },
+    { type: 'ambulance', label: 'Швидка', len: 8, siren: 'blue', style: 'van' },
+    { type: 'jeep', label: 'Джип 4×4', len: 6, siren: null, style: 'jeep' },
+    { type: 'truck', label: 'Вантажівка', len: 8, siren: 'orange', style: 'truck' },
+    { type: 'f1', label: 'Болід F1', len: 6, siren: null, style: 'f1' },
+    { type: 'cabrio', label: 'Кабріолет', len: 6, siren: null, style: 'cabrio' },
+    { type: 'cyber', label: 'Кібер-Пікап', len: 8, siren: null, style: 'cyber' },
+    { type: 'bus', label: 'Автобус', len: 10, siren: null, style: 'bus' }
   ];
 
   const editions = [
@@ -263,50 +263,69 @@ function generate100Cars() {
         : ed.secondary;
 
       const halfL = cls.len / 2;
-      // Колеса
-      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: -halfL + 1, rot: 0 });
-      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: halfL - 1, rot: 0 });
-      if (cls.len >= 8) {
-        items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, z: halfL - 3, rot: 0 });
+
+      // Рівень Y = 0 (висота 1.2 = 3 пластини): Колеса на осях + центральні блоки шасі
+      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, y: 0, z: -halfL + 1, rot: 0 });
+      items.push({ partId: 'd_wheel', colorHex: '#1B1D21', x: 0, y: 0, z: halfL - 1, rot: 0 });
+
+      if (cls.len === 6) {
+        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, y: 0, z: 0, rot: 0 });
+        items.push({ partId: 'p_2x6', colorHex: secondary, x: 0, y: 1.2, z: 0, rot: 0 });
+      } else if (cls.len === 8) {
+        items.push({ partId: 'b_2x4', colorHex: primary, x: 0, y: 0, z: 0, rot: 0 });
+        items.push({ partId: 'p_2x8', colorHex: secondary, x: 0, y: 1.2, z: 0, rot: 0 });
+      } else if (cls.len === 10) {
+        items.push({ partId: 'b_2x6', colorHex: primary, x: 0, y: 0, z: 0, rot: 0 });
+        items.push({ partId: 'p_2x6', colorHex: secondary, x: 0, y: 1.2, z: -2, rot: 0 });
+        items.push({ partId: 'p_2x4', colorHex: secondary, x: 0, y: 1.2, z: 3, rot: 0 });
       }
 
-      // Шасі
-      for (let z = -halfL + 1; z < halfL; z += 2) {
-        items.push({ partId: 'p_2x2', colorHex: primary, x: 0, z, rot: 0 });
+      // Рівень Y = 1.6 (над рамою): Кузов авто
+      const zFront = -halfL + 1;
+      // 1. Похилий капот спереду (rot=2 нахилений вперед на -Z)
+      items.push({ partId: 's_2x2', colorHex: primary, x: 0, y: 1.6, z: zFront, rot: 2 });
+
+      // 2. Лобове скло зі скла (rot=2)
+      if (cls.style !== 'f1') {
+        items.push({ partId: 's_2x2', colorHex: '#88D8FF', x: 0, y: 1.6, z: zFront + 2, rot: 2 });
+      } else {
+        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, y: 1.6, z: zFront + 2, rot: 0 });
       }
 
-      // Передній бампер + фари
-      items.push({ partId: 's_2x2', colorHex: primary, x: 0, z: -halfL + 1, rot: 2 });
-      items.push({ partId: 't_1x2', colorHex: '#FFD500', x: 0, z: -halfL + 0.5, rot: 1 });
-
-      // Кабіна / Скло
-      if (cls.type === 'bus') {
-        for (let z = -halfL + 3; z <= halfL - 3; z += 2) {
-          items.push({ partId: 'd_win', colorHex: secondary, x: 0, z, rot: 1 });
-          items.push({ partId: 't_2x2', colorHex: primary, x: 0, z, rot: 0 });
+      // 3. Задня частина авто
+      if (cls.len === 6) {
+        if (cls.style === 'sport' || cls.style === 'f1') {
+          items.push({ partId: 'b_2x2', colorHex: primary, x: 0, y: 1.6, z: 2, rot: 0 });
+          items.push({ partId: 't_2x2', colorHex: secondary, x: 0, y: 2.8, z: 2, rot: 0 }); // спойлер
+        } else if (cls.style === 'cabrio') {
+          items.push({ partId: 'p_2x2', colorHex: primary, x: 0, y: 1.6, z: 2, rot: 0 });
+        } else {
+          // Седан / Поліція / Джип
+          items.push({ partId: 'b_2x2', colorHex: primary, x: 0, y: 1.6, z: 2, rot: 0 });
+          items.push({ partId: 't_2x4', colorHex: secondary, x: 0, y: 2.8, z: 1, rot: 0 }); // дах кабіни
         }
-      } else if (cls.type !== 'f1' && cls.type !== 'cabrio') {
-        items.push({ partId: 'd_win', colorHex: secondary, x: 0, z: -halfL + 3, rot: 1 });
-        items.push({ partId: 't_2x2', colorHex: secondary, x: 0, z: -halfL + 3, rot: 0 });
-      } else {
-        items.push({ partId: 'p_2x2', colorHex: '#1B1D21', x: 0, z: -halfL + 3, rot: 0 });
+      } else if (cls.len === 8) {
+        // Вантажівка / Пожежна / Швидка / Кібер-пікап
+        items.push({ partId: 'b_2x4', colorHex: primary, x: 0, y: 1.6, z: 2, rot: 0 });
+        if (cls.style !== 'cyber') {
+          items.push({ partId: 'b_2x4', colorHex: secondary, x: 0, y: 2.8, z: 2, rot: 0 });
+          items.push({ partId: 't_2x4', colorHex: primary, x: 0, y: 4.0, z: 2, rot: 0 });
+        } else {
+          items.push({ partId: 's_2x2', colorHex: primary, x: 0, y: 2.8, z: 1, rot: 0 });
+        }
+      } else if (cls.len === 10) {
+        // Міський автобус
+        items.push({ partId: 'b_2x6', colorHex: primary, x: 0, y: 1.6, z: 2, rot: 0 });
+        items.push({ partId: 'b_2x6', colorHex: '#88D8FF', x: 0, y: 2.8, z: 1, rot: 0 });
+        items.push({ partId: 't_2x8', colorHex: secondary, x: 0, y: 4.0, z: 1, rot: 0 });
       }
 
-      // Задня частина (кузов, спойлер, цистерна)
-      if (cls.bed === 'spoiler' || cls.bed === 'wing') {
-        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, z: halfL - 1, rot: 0 });
-        items.push({ partId: 't_2x2', colorHex: secondary, x: 0, z: halfL - 1, rot: 0 });
-      } else if (cls.bed === 'tanker' || cls.bed === 'box' || cls.bed === 'cargo') {
-        items.push({ partId: 'b_2x4', colorHex: secondary, x: 0, z: halfL - 2, rot: 0 });
-        items.push({ partId: 't_2x4', colorHex: primary, x: 0, z: halfL - 2, rot: 0 });
-      } else {
-        items.push({ partId: 'b_2x2', colorHex: primary, x: 0, z: halfL - 1, rot: 0 });
-      }
-
-      // Мигалка на даху
+      // Мигалка на даху спецтранспорту
       if (cls.siren) {
-        const sirenColor = cls.siren === 'red' ? '#FF5500' : (cls.siren === 'orange' ? '#FF6F00' : '#88D8FF');
-        items.push({ partId: 'p_1x2', colorHex: sirenColor, x: 0, z: -halfL + 3, rot: 1 });
+        const sirenHex = cls.siren === 'red' ? '#FF5500' : (cls.siren === 'orange' ? '#FF6F00' : '#88D8FF');
+        const sirenY = cls.len === 6 ? 3.2 : 4.4;
+        const sirenZ = cls.len === 6 ? 0.5 : 1;
+        items.push({ partId: 'p_1x2', colorHex: sirenHex, x: 0, y: sirenY, z: sirenZ, rot: 1 });
       }
 
       cars.push({
@@ -328,11 +347,143 @@ function generate100Cars() {
 }
 
 // ==========================================
-// 5. ГЕНЕРАТОР 100 ВАРІАЦІЙ БУДИНКІВ (1-2-3 ПОВЕРХИ, РІЗНІ РОЗМІРИ)
+// 5. ГЕНЕРАТОР 100 ІДЕАЛЬНО РІВНИХ БУДИНКІВ (1-2-3 ПОВЕРХИ)
 // ==========================================
+function buildCleanHouseItems(w, d, floors, style, addTree) {
+  const items = [];
+  const halfW = w / 2;
+  const halfD = d / 2;
+
+  // 1. Рівний фундамент на Y = 0 (плита висотою 1 пластина = 0.4)
+  for (let x = -halfW + 1; x < halfW; x += 2) {
+    for (let z = -halfD + 1; z < halfD; z += 2) {
+      items.push({ partId: 'p_2x2', colorHex: style.trim, x, y: 0, z, rot: 0 });
+    }
+  }
+
+  // Допоміжна функція для 1×1 колони висотою 2 кубики (6 пластин = 2.4)
+  const addPillar1x1 = (px, py, pz, col) => {
+    items.push({ partId: 'b_1x1', colorHex: col, x: px, y: py, z: pz, rot: 0 });
+    items.push({ partId: 'b_1x1', colorHex: col, x: px, y: py + 1.2, z: pz, rot: 0 });
+  };
+
+  // Допоміжна функція для 1×2 стіни висотою 2 кубики (6 пластин = 2.4)
+  const addWall1x2 = (wx, wy, wz, rot, col) => {
+    items.push({ partId: 'b_1x2', colorHex: col, x: wx, y: wy, z: wz, rot });
+    items.push({ partId: 'b_1x2', colorHex: col, x: wx, y: wy + 1.2, z: wz, rot });
+  };
+
+  // 2. Поверхи (кожен поверх висотою 2.4 стіни + 0.4 перекриття = 2.8)
+  for (let fl = 0; fl < floors; fl++) {
+    const y0 = 0.4 + fl * 2.8;
+
+    // Ліва та права стіни (x = -halfW + 0.5 та +halfW - 0.5)
+    [-halfW + 0.5, halfW - 0.5].forEach(sx => {
+      if (d === 6) {
+        addWall1x2(sx, y0, -2, 0, style.wall);
+        items.push({ partId: 'd_win', colorHex: style.trim, x: sx, y: y0, z: 0, rot: 0 });
+        addWall1x2(sx, y0, 2, 0, style.wall);
+      } else {
+        // d === 8
+        addWall1x2(sx, y0, -3, 0, style.wall);
+        items.push({ partId: 'd_win', colorHex: style.trim, x: sx, y: y0, z: -1, rot: 0 });
+        items.push({ partId: 'd_win', colorHex: style.trim, x: sx, y: y0, z: 1, rot: 0 });
+        addWall1x2(sx, y0, 3, 0, style.wall);
+      }
+    });
+
+    // Задня стіна (z = -halfD + 0.5, внутрішня ширина w - 2)
+    const innerW = w - 2;
+    for (let x = -innerW / 2 + 1; x < innerW / 2; x += 2) {
+      addWall1x2(x, y0, -halfD + 0.5, 1, style.wall);
+    }
+
+    // Передня стіна (z = +halfD - 0.5)
+    const fz = halfD - 0.5;
+    if (w === 6) {
+      addPillar1x1(-1.5, y0, fz, style.wall);
+      addPillar1x1(1.5, y0, fz, style.wall);
+      if (fl === 0) {
+        items.push({ partId: 'd_door', colorHex: style.trim, x: 0, y: y0, z: fz, rot: 1 });
+      } else {
+        items.push({ partId: 'd_win', colorHex: style.trim, x: 0, y: y0, z: fz, rot: 1 });
+      }
+    } else if (w === 8) {
+      items.push({ partId: 'd_win', colorHex: style.trim, x: -2, y: y0, z: fz, rot: 1 });
+      items.push({ partId: 'd_win', colorHex: style.trim, x: 2, y: y0, z: fz, rot: 1 });
+      if (fl === 0) {
+        items.push({ partId: 'd_door', colorHex: style.trim, x: 0, y: y0, z: fz, rot: 1 });
+      } else {
+        addWall1x2(0, y0, fz, 1, style.wall);
+      }
+    } else {
+      // w === 10
+      addPillar1x1(-3.5, y0, fz, style.wall);
+      addPillar1x1(3.5, y0, fz, style.wall);
+      items.push({ partId: 'd_win', colorHex: style.trim, x: -2, y: y0, z: fz, rot: 1 });
+      items.push({ partId: 'd_win', colorHex: style.trim, x: 2, y: y0, z: fz, rot: 1 });
+      if (fl === 0) {
+        items.push({ partId: 'd_door', colorHex: style.trim, x: 0, y: y0, z: fz, rot: 1 });
+      } else {
+        items.push({ partId: 'd_win', colorHex: style.trim, x: 0, y: y0, z: fz, rot: 1 });
+      }
+    }
+
+    // Міжповерхове перекриття (Y = y0 + 2.4)
+    const ySlab = Number((y0 + 2.4).toFixed(2));
+    for (let x = -halfW + 1; x < halfW; x += 2) {
+      for (let z = -halfD + 1; z < halfD; z += 2) {
+        items.push({ partId: 'p_2x2', colorHex: style.trim, x, y: ySlab, z, rot: 0 });
+      }
+    }
+  }
+
+  // 3. Дах на рівні yRoof = 0.4 + floors * 2.8
+  const yRoof = Number((0.4 + floors * 2.8).toFixed(2));
+
+  if (style.roofType === 'gable') {
+    // Акуратний двосхилий дах зі скосів s_2x3 (по центру) та плоских карнизів по краях
+    for (let z = -halfD + 1; z < halfD; z += 2) {
+      items.push({ partId: 's_2x3', colorHex: style.roof, x: -1.5, y: yRoof, z, rot: 1 });
+      items.push({ partId: 's_2x3', colorHex: style.roof, x: 1.5, y: yRoof, z, rot: 3 });
+      if (w >= 8) {
+        items.push({ partId: 't_1x2', colorHex: style.roof, x: -3.5, y: yRoof, z, rot: 0 });
+        items.push({ partId: 't_1x2', colorHex: style.roof, x: 3.5, y: yRoof, z, rot: 0 });
+      }
+      if (w === 10) {
+        items.push({ partId: 't_1x2', colorHex: style.roof, x: -4.5, y: yRoof, z, rot: 0 });
+        items.push({ partId: 't_1x2', colorHex: style.roof, x: 4.5, y: yRoof, z, rot: 0 });
+      }
+    }
+    // Димар
+    items.push({ partId: 'b_1x1', colorHex: style.trim, x: 1.5, y: yRoof + 1.2, z: -halfD + 1.5, rot: 0 });
+  } else if (style.roofType === 'castle') {
+    // Замкові зубці по периметру та прапор
+    for (let x = -halfW + 0.5; x <= halfW - 0.5; x += 2) {
+      items.push({ partId: 'b_1x1', colorHex: style.roof, x, y: yRoof, z: -halfD + 0.5, rot: 0 });
+      items.push({ partId: 'b_1x1', colorHex: style.roof, x, y: yRoof, z: halfD - 0.5, rot: 0 });
+    }
+    items.push({ partId: 'dec_flag', colorHex: '#E3000B', x: halfW - 1, y: yRoof, z: -halfD + 1, rot: 0 });
+  } else {
+    // Сучасний плоский дах з терасою
+    for (let x = -halfW + 1; x < halfW; x += 2) {
+      items.push({ partId: 't_1x2', colorHex: style.roof, x, y: yRoof, z: -halfD + 0.5, rot: 1 });
+      items.push({ partId: 't_1x2', colorHex: style.roof, x, y: yRoof, z: halfD - 0.5, rot: 1 });
+    }
+    items.push({ partId: 'b_cyl2', colorHex: style.trim, x: 0, y: yRoof, z: 0, rot: 0 });
+  }
+
+  // Ялинка поруч із будинком
+  if (addTree) {
+    items.push({ partId: 'dec_tree', colorHex: '#00A850', x: halfW + 1.5, y: 0, z: halfD - 1, rot: 0 });
+  }
+
+  return items;
+}
+
 function generate100Houses() {
   const styles = [
-    { name: 'Котедж', wall: '#F4F4F4', trim: '#E3000B', roof: '#E3000B', roofType: 'gable' },
+    { name: 'Котедж', wall: '#F4F4F4', trim: '#A3A8AD', roof: '#E3000B', roofType: 'gable' },
     { name: 'Вілла Модерн', wall: '#F4F4F4', trim: '#1B1D21', roof: '#5C6166', roofType: 'flat' },
     { name: 'Цегляний Дім', wall: '#FF6F00', trim: '#DEC69B', roof: '#6B3E26', roofType: 'gable' },
     { name: 'Скандинавський', wall: '#36AEBF', trim: '#F4F4F4', roof: '#1B1D21', roofType: 'gable' },
@@ -340,127 +491,50 @@ function generate100Houses() {
     { name: 'Замкова Вежа', wall: '#A3A8AD', trim: '#5C6166', roof: '#5C6166', roofType: 'castle' },
     { name: 'Лісове Шале', wall: '#6B3E26', trim: '#DEC69B', roof: '#005A2B', roofType: 'gable' },
     { name: 'Хмарочос', wall: '#006CB7', trim: '#C0C5CE', roof: '#1B1D21', roofType: 'flat' },
-    { name: 'Казковий Дім', wall: '#FF69B4', trim: '#FFD500', roof: '#7A288A', roofType: 'pyramid' },
+    { name: 'Казковий Дім', wall: '#FF69B4', trim: '#FFD500', roof: '#7A288A', roofType: 'gable' },
     { name: 'Кібер-База', wall: '#1B1D21', trim: '#36AEBF', roof: '#006CB7', roofType: 'flat' }
   ];
 
   const footprints = [
-    { w: 6, d: 6, label: '6×6' },
-    { w: 8, d: 6, label: '8×6' },
-    { w: 8, d: 8, label: '8×8' },
-    { w: 10, d: 6, label: '10×6' },
-    { w: 10, d: 8, label: '10×8' }
+    { w: 6, d: 6 },
+    { w: 8, d: 6 },
+    { w: 8, d: 8 },
+    { w: 10, d: 6 },
+    { w: 10, d: 8 }
   ];
 
   const houses = [];
-  let idx = 1;
-
   for (let i = 0; i < 100; i++) {
     const st = styles[i % styles.length];
     const fp = footprints[Math.floor(i / 20) % footprints.length];
-    const floors = (i % 3) + 1; // 1, 2 або 3 поверхи!
-
-    const items = [];
-    const halfW = fp.w / 2;
-    const halfD = fp.d / 2;
-
-    for (let fl = 0; fl < floors; fl++) {
-      // Передня стіна (з дверима на 1 поверсі та вікнами на верхніх)
-      if (fl === 0) {
-        items.push({ partId: 'd_door', colorHex: st.trim, x: 0, z: halfD - 0.5, rot: 1 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 1, z: halfD - 0.5, rot: 1 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 1, z: halfD - 0.5, rot: 1 });
-        if (fp.w >= 8) {
-          items.push({ partId: 'd_win', colorHex: st.trim, x: -halfW + 2.5, z: halfD - 0.5, rot: 1 });
-          items.push({ partId: 'd_win', colorHex: st.trim, x: halfW - 2.5, z: halfD - 0.5, rot: 1 });
-        }
-      } else {
-        items.push({ partId: 'd_win4', colorHex: st.trim, x: 0, z: halfD - 0.5, rot: 1 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 1, z: halfD - 0.5, rot: 1 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 1, z: halfD - 0.5, rot: 1 });
-        if (fp.w >= 8) {
-          items.push({ partId: 'b_1x2', colorHex: st.wall, x: -halfW + 2.5, z: halfD - 0.5, rot: 1 });
-          items.push({ partId: 'b_1x2', colorHex: st.wall, x: halfW - 2.5, z: halfD - 0.5, rot: 1 });
-        }
-      }
-
-      // Задня стіна
-      for (let x = -halfW + 1; x < halfW; x += 2) {
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x, z: -halfD + 0.5, rot: 1 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x, z: -halfD + 0.5, rot: 1 });
-      }
-
-      // Ліва та права стіни з вікнами
-      [-halfW + 0.5, halfW - 0.5].forEach(sx => {
-        items.push({ partId: 'd_win', colorHex: st.trim, x: sx, z: 0, rot: 0 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: -halfD + 1.5, rot: 0 });
-        items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: halfD - 1.5, rot: 0 });
-        if (fp.d >= 8) {
-          items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: -halfD + 3, rot: 0 });
-          items.push({ partId: 'b_1x2', colorHex: st.wall, x: sx, z: halfD - 3, rot: 0 });
-        }
-      });
-
-      // Міжповерховий пояс
-      for (let x = -halfW + 1; x < halfW; x += 2) {
-        items.push({ partId: 'p_1x2', colorHex: st.trim, x, z: halfD - 0.5, rot: 1 });
-        items.push({ partId: 'p_1x2', colorHex: st.trim, x, z: -halfD + 0.5, rot: 1 });
-      }
-    }
-
-    // Дах залежно від стилю
-    if (st.roofType === 'gable' || st.roofType === 'pyramid') {
-      for (let x = -halfW + 1; x < halfW; x += 2) {
-        items.push({ partId: 'r_2x4', colorHex: st.roof, x, z: -1.5, rot: 0 });
-        items.push({ partId: 'r_2x4', colorHex: st.roof, x, z: 1.5, rot: 0 });
-      }
-    } else if (st.roofType === 'castle') {
-      [-halfW + 0.5, halfW - 0.5].forEach(cx => {
-        [-halfD + 0.5, halfD - 0.5].forEach(cz => {
-          items.push({ partId: 'b_1x1', colorHex: st.roof, x: cx, z: cz, rot: 0 });
-        });
-      });
-      items.push({ partId: 'dec_flag', colorHex: '#E3000B', x: halfW - 1, z: -halfD + 1, rot: 0 });
-    } else {
-      for (let x = -halfW + 1; x < halfW; x += 2) {
-        items.push({ partId: 't_2x4', colorHex: st.roof, x, z: -1.5, rot: 0 });
-        items.push({ partId: 't_2x4', colorHex: st.roof, x, z: 1.5, rot: 0 });
-      }
-    }
-
-    // Дерево біля котеджів
-    if (i % 3 === 0) {
-      items.push({ partId: 'dec_tree', colorHex: '#00A850', x: halfW + 1.5, z: halfD - 1, rot: 0 });
-    }
+    const floors = (i % 3) + 1;
 
     houses.push({
-      id: `house_${String(idx).padStart(3, '0')}`,
-      name: `#${idx} ${st.name} (${floors} пов.)`,
+      id: `house_${String(i + 1).padStart(3, '0')}`,
+      name: `#${i + 1} ${st.name} (${floors} пов.)`,
       cat: 'houses',
       subCat: `f${floors}`,
       floors,
-      w: fp.w,
+      w: fp.w + (i % 3 === 0 ? 2 : 0),
       d: fp.d,
       primaryColor: st.wall,
       secondaryColor: st.roof,
-      items
+      items: buildCleanHouseItems(fp.w, fp.d, floors, st, i % 3 === 0)
     });
-    idx++;
   }
-
   return houses;
 }
 
 // ==========================================
-// 6. ГЕНЕРАТОР 32 ДОДАТКОВИХ НАБОРІВ ("ЩЕ НАБОРИ")
+// 6. ГЕНЕРАТОР 32 ДОДАТКОВИХ НАБОРІВ З ТОЧНИМИ КООРДИНАТАМИ
 // ==========================================
 function generateExtraSets() {
   const sets = [];
-  const makeSet = (id, name, subCat, primaryColor, secondaryColor, items) => {
-    sets.push({ id, name, cat: 'sets', subCat, w: 6, d: 6, primaryColor, secondaryColor, items });
+  const makeSet = (id, name, subCat, w, d, primaryColor, secondaryColor, items) => {
+    sets.push({ id, name, cat: 'sets', subCat, w, d, primaryColor, secondaryColor, items });
   };
 
-  // Гелікоптери (8 варіантів)
+  // Гелікоптери (8)
   [
     ['Поліцейський Гелікоптер', '#16284C', '#F4F4F4'],
     ['Рятувальний Гелікоптер', '#FF6F00', '#F4F4F4'],
@@ -471,18 +545,18 @@ function generateExtraSets() {
     ['Кібер-Дрон', '#1B1D21', '#36AEBF'],
     ['Берегова Охорона', '#FFD500', '#006CB7']
   ].forEach(([name, c1, c2], i) => {
-    makeSet(`set_heli_${i}`, name, 'air', c1, c2, [
-      { partId: 'p_2x6', colorHex: c1, x: 0, z: 0, rot: 0 },
-      { partId: 'b_2x4', colorHex: c1, x: 0, z: -0.5, rot: 0 },
-      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, z: -2.5, rot: 2 },
-      { partId: 'b_1x4', colorHex: c2, x: 0, z: 3, rot: 0 },
-      { partId: 't_1x2', colorHex: c2, x: -2, z: -0.5, rot: 1 },
-      { partId: 't_1x2', colorHex: c2, x: 2, z: -0.5, rot: 1 },
-      { partId: 't_1x2', colorHex: '#1B1D21', x: 0, z: -0.5, rot: 0 }
+    makeSet(`set_heli_${i}`, name, 'air', 4, 8, c1, c2, [
+      { partId: 'p_2x8', colorHex: c2, x: 0, y: 0, z: 0, rot: 0 },
+      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, y: 0.4, z: -3, rot: 2 },
+      { partId: 'b_2x2', colorHex: c1, x: 0, y: 0.4, z: -1, rot: 0 },
+      { partId: 'b_1x4', colorHex: c1, x: 0, y: 0.4, z: 2, rot: 0 },
+      { partId: 't_1x2', colorHex: c2, x: 0, y: 1.6, z: 3.5, rot: 1 },
+      { partId: 't_1x4', colorHex: '#1B1D21', x: -1.5, y: 1.6, z: -1, rot: 1 },
+      { partId: 't_1x4', colorHex: '#1B1D21', x: 1.5, y: 1.6, z: -1, rot: 1 }
     ]);
   });
 
-  // Космічні кораблі та ракети (8 варіантів)
+  // Космічні ракети та кораблі (8)
   [
     ['Космічний Шаттл', '#F4F4F4', '#1B1D21'],
     ['Зоряний Винищувач', '#006CB7', '#FFD500'],
@@ -493,18 +567,17 @@ function generateExtraSets() {
     ['Квантовий Перехоплювач', '#1B1D21', '#E3000B'],
     ['Золотий Зоряний Корабель', '#D4AF37', '#006CB7']
   ].forEach(([name, c1, c2], i) => {
-    makeSet(`set_space_${i}`, name, 'space', c1, c2, [
-      { partId: 'b_cyl2', colorHex: c1, x: 0, z: 0, rot: 0 },
-      { partId: 'b_cyl2', colorHex: c2, x: 0, z: 0, rot: 0 },
-      { partId: 'b_cone', colorHex: c1, x: 0, z: 0, rot: 0 },
-      { partId: 's_1x2', colorHex: c2, x: -1.5, z: 0, rot: 3 },
-      { partId: 's_1x2', colorHex: c2, x: 1.5, z: 0, rot: 1 },
-      { partId: 's_1x2', colorHex: c2, x: 0, z: -1.5, rot: 0 },
-      { partId: 's_1x2', colorHex: c2, x: 0, z: 1.5, rot: 2 }
+    makeSet(`set_space_${i}`, name, 'space', 4, 4, c1, c2, [
+      { partId: 'p_4x4', colorHex: '#5C6166', x: 0, y: 0, z: 0, rot: 0 },
+      { partId: 'b_cyl2', colorHex: c1, x: 0, y: 0.4, z: 0, rot: 0 },
+      { partId: 'b_cyl2', colorHex: c2, x: 0, y: 2.8, z: 0, rot: 0 },
+      { partId: 'b_cone', colorHex: c1, x: 0, y: 5.2, z: 0, rot: 0 },
+      { partId: 's_1x2', colorHex: c2, x: -1.5, y: 0.4, z: 0, rot: 3 },
+      { partId: 's_1x2', colorHex: c2, x: 1.5, y: 0.4, z: 0, rot: 1 }
     ]);
   });
 
-  // Міська інфраструктура та парк (8 варіантів)
+  // Міська інфраструктура (8)
   [
     ['Міський Фонтан', '#A3A8AD', '#88D8FF'],
     ['Кам’яний Міст', '#5C6166', '#DEC69B'],
@@ -515,17 +588,18 @@ function generateExtraSets() {
     ['Оглядова Вежа', '#006CB7', '#C0C5CE'],
     ['Кав’ярня на Колесах', '#36AEBF', '#F4F4F4']
   ].forEach(([name, c1, c2], i) => {
-    makeSet(`set_city_${i}`, name, 'city_decor', c1, c2, [
-      { partId: 'p_6x6', colorHex: c1, x: 0, z: 0, rot: 0 },
-      { partId: 'b_cyl2', colorHex: c2, x: 0, z: 0, rot: 0 },
-      { partId: 'd_fence', colorHex: c1, x: 0, z: 2.5, rot: 1 },
-      { partId: 'd_fence', colorHex: c1, x: 0, z: -2.5, rot: 1 },
-      { partId: 'dec_tree', colorHex: '#00A850', x: -2, z: -1, rot: 0 },
-      { partId: 'dec_flag', colorHex: c2, x: 2, z: 1, rot: 0 }
+    makeSet(`set_city_${i}`, name, 'city_decor', 6, 6, c1, c2, [
+      { partId: 'p_6x6', colorHex: c1, x: 0, y: 0, z: 0, rot: 0 },
+      { partId: 'b_cyl2', colorHex: c2, x: 0, y: 0.4, z: 0, rot: 0 },
+      { partId: 'b_cone', colorHex: c1, x: 0, y: 2.8, z: 0, rot: 0 },
+      { partId: 'd_fence', colorHex: c1, x: 0, y: 0.4, z: 2.5, rot: 1 },
+      { partId: 'd_fence', colorHex: c1, x: 0, y: 0.4, z: -2.5, rot: 1 },
+      { partId: 'dec_tree', colorHex: '#00A850', x: -2, y: 0.4, z: 0, rot: 0 },
+      { partId: 'dec_flag', colorHex: c2, x: 2, y: 0.4, z: 0, rot: 0 }
     ]);
   });
 
-  // Роботи-Мехи та Катери (8 варіантів)
+  // Бойові Роботи-Мехи та Катери (8)
   [
     ['Бойовий Мех Титан', '#E3000B', '#FFD500'],
     ['Поліцейський Робот', '#006CB7', '#F4F4F4'],
@@ -536,13 +610,13 @@ function generateExtraSets() {
     ['Рятувальний Човен', '#FF6F00', '#F4F4F4'],
     ['Яхта Мільйонера', '#F4F4F4', '#D4AF37']
   ].forEach(([name, c1, c2], i) => {
-    makeSet(`set_mech_${i}`, name, 'mech_boat', c1, c2, [
-      { partId: 'b_2x2', colorHex: c1, x: -1.5, z: 0, rot: 0 },
-      { partId: 'b_2x2', colorHex: c1, x: 1.5, z: 0, rot: 0 },
-      { partId: 'b_2x6', colorHex: c2, x: 0, z: 0, rot: 1 },
-      { partId: 'b_2x4', colorHex: c1, x: 0, z: 0, rot: 1 },
-      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, z: 0, rot: 0 },
-      { partId: 'dec_flag', colorHex: c2, x: 0, z: -1, rot: 0 }
+    makeSet(`set_mech_${i}`, name, 'mech_boat', 4, 4, c1, c2, [
+      { partId: 'b_2x2', colorHex: c1, x: -1.5, y: 0, z: 0, rot: 0 },
+      { partId: 'b_2x2', colorHex: c1, x: 1.5, y: 0, z: 0, rot: 0 },
+      { partId: 'p_4x4', colorHex: c2, x: 0, y: 1.2, z: 0, rot: 0 },
+      { partId: 'b_2x4', colorHex: c1, x: 0, y: 1.6, z: 0, rot: 1 },
+      { partId: 's_2x2', colorHex: '#88D8FF', x: 0, y: 2.8, z: 0, rot: 2 },
+      { partId: 'dec_flag', colorHex: c2, x: 1.5, y: 2.8, z: -1, rot: 0 }
     ]);
   });
 
@@ -916,7 +990,7 @@ function createPartMesh(part, colorObj, isGhost = false) {
     group.add(bot, top, left, right, glass);
     addStudsToGroup(group, part.w, part.d, h, mat);
   } else if (part.shape === 'door') {
-    const frameThick = 0.25;
+    const frameThick = 0.22;
     const top = new THREE.Mesh(new THREE.BoxGeometry(w - gap, frameThick, d - gap), mat);
     top.position.y = h - frameThick / 2;
     const left = new THREE.Mesh(new THREE.BoxGeometry(w - gap, h, frameThick), mat);
@@ -925,9 +999,9 @@ function createPartMesh(part, colorObj, isGhost = false) {
     right.position.set(0, h / 2, d / 2 - frameThick / 2);
 
     const leafMat = createMaterial({ name: 'Leaf', hex: '#FFD500' }, isGhost);
-    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.24, h - frameThick - 0.05, d - frameThick * 2 - 0.06), leafMat);
-    leaf.position.set(0.35, (h - frameThick) / 2, 0.2);
-    leaf.rotation.y = 0.45;
+    const leaf = new THREE.Mesh(new THREE.BoxGeometry(0.2, h - frameThick - 0.04, d - frameThick * 2 - 0.04), leafMat);
+    leaf.position.set(0.28, (h - frameThick) / 2, 0.15);
+    leaf.rotation.y = 0.38;
     group.add(top, left, right, leaf);
     addStudsToGroup(group, part.w, part.d, h, mat);
   } else if (part.shape === 'wheel') {
@@ -1003,13 +1077,13 @@ class DenysLegoGame {
     this.selectedPart = BASE_PARTS[7]; // Кубик 2x4
     this.selectedColor = LEGO_COLORS[0];
     this.currentRotation = 0;
-    this.toolMode = 'build'; // 'build' | 'move' | 'paint' | 'delete'
+    this.toolMode = 'build';
     this.activeCategory = 'bricks';
     this.activeSubFilter = 'all';
 
     this.placedBricks = [];
-    this.selectedBricks = []; // вибрані деталі для вільного перетягування
-    this.moveWholeGroup = true; // true = весь пресет (машина/будинок), false = одна деталь
+    this.selectedBricks = [];
+    this.moveWholeGroup = true;
     this.isDraggingSelection = false;
     this.dragAnchorPoint = new THREE.Vector3();
 
@@ -1084,7 +1158,6 @@ class DenysLegoGame {
     this.bricksGroup = new THREE.Group();
     this.scene.add(this.bricksGroup);
 
-    // Підсвітка вибраного об'єкта (рамка виділення)
     this.selectionHelper = new THREE.Box3Helper(new THREE.Box3(), 0xffd500);
     this.selectionHelper.visible = false;
     this.scene.add(this.selectionHelper);
@@ -1186,7 +1259,6 @@ class DenysLegoGame {
   createGhostMesh() {
     if (this.ghostMesh) this.scene.remove(this.ghostMesh);
     if (this.selectedPart.items) {
-      // Для пресетів машин/будинків привид не потрібен — вони спавняться і вільно перетягуються!
       this.ghostMesh = null;
       return;
     }
@@ -1273,20 +1345,49 @@ class DenysLegoGame {
     return record;
   }
 
+  // Пошук вільного місця на полі, щоб пресети не накладалися при спавні
+  findFreeSpot(w, d) {
+    const half = this.gridSize / 2;
+    const step = 2;
+    for (let radius = 0; radius <= half - Math.max(w, d) / 2; radius += step) {
+      for (let ox = -radius; ox <= radius; ox += step) {
+        for (let oz = -radius; oz <= radius; oz += step) {
+          if (Math.abs(ox) !== radius && Math.abs(oz) !== radius) continue;
+          if (ox - w / 2 < -half || ox + w / 2 > half || oz - d / 2 < -half || oz + d / 2 > half) continue;
+          if (this.computeStackHeight(ox, oz, w + 1, d + 1) === 0) {
+            return { x: ox, z: oz };
+          }
+        }
+      }
+    }
+    return { x: 0, z: 0 };
+  }
+
   // ==========================================
-  // 10. СПАВН ТА ВІЛЬНЕ ПЕРЕСУВАННЯ ПРЕСЕТІВ (МАШИН / БУДИНКІВ / НАБОРІВ)
+  // 10. СПАВН ТА ВІЛЬНЕ ПЕРЕСУВАННЯ ПРЕСЕТІВ
   // ==========================================
-  spawnPresetOnBoard(preset, offsetX = 0, offsetZ = 0, autoSelectForMove = true) {
+  spawnPresetOnBoard(preset, offsetX = null, offsetZ = null, autoSelectForMove = true) {
+    let ox = offsetX;
+    let oz = offsetZ;
+    if (ox === null || oz === null) {
+      const spot = this.findFreeSpot(preset.w || 6, preset.d || 6);
+      ox = spot.x;
+      oz = spot.z;
+    }
+
     const groupId = crypto.randomUUID();
     const createdRecords = [];
+
+    // Висота основи під пресетом (0 якщо вільне поле)
+    const groundY = this.computeStackHeight(ox, oz, preset.w || 4, preset.d || 4);
 
     preset.items.forEach(it => {
       const part = BASE_PARTS.find(p => p.id === it.partId) || BASE_PARTS[0];
       const color = LEGO_COLORS.find(c => c.hex === it.colorHex) || { name: 'Custom', hex: it.colorHex };
-      const bx = offsetX + it.x;
-      const bz = offsetZ + it.z;
-      const dims = this.getEffectiveDims(part, it.rot);
-      const by = this.computeStackHeight(bx, bz, dims.w, dims.d);
+      const bx = ox + it.x;
+      const bz = oz + it.z;
+      // Використовуємо точні креслярські координати Y пресету!
+      const by = Number((groundY + (it.y ?? 0)).toFixed(2));
       const rec = this.placeBrick(part, color, bx, by, bz, it.rot, true, groupId);
       createdRecords.push(rec);
     });
@@ -1296,7 +1397,7 @@ class DenysLegoGame {
       this.moveWholeGroup = true;
       document.getElementById('btn-move-scope').textContent = '🏠 Весь об\'єкт';
       this.selectBrickOrGroup(createdRecords[0]);
-      this.showToast(`«${preset.name}» на полі! Тягни щоб перемістити.`);
+      this.showToast(`«${preset.name}» зібрано! Тягни пальцем або мишею.`);
     }
     return createdRecords;
   }
@@ -1332,23 +1433,20 @@ class DenysLegoGame {
 
   moveSelectedBy(dx, dz) {
     if (this.selectedBricks.length === 0) return;
-
     const half = this.gridSize / 2;
-    // Перевіряємо чи не виходить за межі базової пластини
+
     for (const b of this.selectedBricks) {
       const dims = this.getEffectiveDims(b.part, b.rot);
       const nx = b.x + dx;
       const nz = b.z + dz;
       if (nx - dims.w / 2 < -half || nx + dims.w / 2 > half || nz - dims.d / 2 < -half || nz + dims.d / 2 > half) {
-        return; // межа поля
+        return;
       }
     }
 
     const ignoreSet = new Set(this.selectedBricks);
-    // Знаходимо мінімальний Y вибраної групи (щоб зберегти поверхи будинку!)
     const minBaseY = Math.min(...this.selectedBricks.map(b => b.y));
 
-    // Обчислюємо нову висоту опори під групою
     let newBaseY = 0;
     for (const b of this.selectedBricks) {
       if (Math.abs(b.y - minBaseY) < 0.05) {
@@ -1370,7 +1468,6 @@ class DenysLegoGame {
 
   rotateSelected90() {
     if (this.selectedBricks.length === 0) return;
-    // Центр обертання групи
     let cx = 0;
     let cz = 0;
     this.selectedBricks.forEach(b => {
@@ -1383,7 +1480,6 @@ class DenysLegoGame {
     for (const b of this.selectedBricks) {
       const relX = b.x - cx;
       const relZ = b.z - cz;
-      // Поворот на 90° за годинниковою стрілкою: (x, z) -> (-z, x)
       b.x = cx - relZ;
       b.z = cz + relX;
       b.rot = (b.rot + 1) % 4;
@@ -1405,7 +1501,7 @@ class DenysLegoGame {
     this.selectedBricks = clones;
     this.moveSelectedBy(2, 2);
     audio.playSnap(1.25);
-    this.showToast('Створено копію! Перетягни її на потрібне місце.');
+    this.showToast('Копію створено! Перетягни її на потрібне місце.');
   }
 
   removeBrick(record) {
@@ -1460,29 +1556,29 @@ class DenysLegoGame {
     }
     this.clearAll(true);
 
-    // Дорога 64x64
+    // Головна дорога 64x64
     const cDarkGray = LEGO_COLORS[9];
     for (let z = -28; z <= 28; z += 4) {
       this.placeBrick(BASE_PARTS[10], cDarkGray, -1, 0, z, 0, false);
       this.placeBrick(BASE_PARTS[10], cDarkGray, 1, 0, z, 0, false);
     }
 
-    // Спавнимо 4 різні будинки + 4 круті машини + 6 фігурок (всі їх можна вільно пересувати!)
-    this.spawnPresetOnBoard(HOUSES_CATALOG[0], -14, -14, false);
-    this.spawnPresetOnBoard(HOUSES_CATALOG[7], 14, -14, false);
-    this.spawnPresetOnBoard(HOUSES_CATALOG[2], -14, 12, false);
-    this.spawnPresetOnBoard(HOUSES_CATALOG[5], 14, 12, false);
+    // 4 охайні будинки різної поверховості + 3 авто + гелікоптер + жителі
+    this.spawnPresetOnBoard(HOUSES_CATALOG[0], -14, -14, false); // 1-поверховий котедж
+    this.spawnPresetOnBoard(HOUSES_CATALOG[7], 14, -14, false);  // 2-поверховий хмарочос
+    this.spawnPresetOnBoard(HOUSES_CATALOG[2], -14, 12, false);  // 3-поверховий цегляний дім
+    this.spawnPresetOnBoard(HOUSES_CATALOG[5], 14, 12, false);   // 3-поверхова замкова вежа
 
-    this.spawnPresetOnBoard(CARS_CATALOG[0], 0, -12, false);
-    this.spawnPresetOnBoard(CARS_CATALOG[10], 0, 0, false);
-    this.spawnPresetOnBoard(CARS_CATALOG[20], 0, 14, false);
-    this.spawnPresetOnBoard(EXTRA_SETS_CATALOG[0], -18, 0, false);
+    this.spawnPresetOnBoard(CARS_CATALOG[0], 0, -14, false);     // Спорткар
+    this.spawnPresetOnBoard(CARS_CATALOG[10], 0, 0, false);      // Поліція
+    this.spawnPresetOnBoard(CARS_CATALOG[20], 0, 14, false);     // Пожежна
+    this.spawnPresetOnBoard(EXTRA_SETS_CATALOG[0], -22, 0, false); // Гелікоптер
 
     [0, 1, 22, 44, 66, 88].forEach((mIdx, k) => {
       this.placeBrick(MINIFIG_CATALOG[mIdx], LEGO_COLORS[0], -6 + k * 2.5, 0, 6, 0, false);
     });
 
-    this.showToast('Мега-Місто 64×64 готове! Натисни «✋ Рухати», щоб пересувати будинки й авто.');
+    this.showToast('Мега-Місто 64×64 готове! Режимом «✋ Рухати» пересувай будинки й машини.');
   }
 
   loadLDrawModel(urlOrText, isText = false) {
@@ -1512,7 +1608,7 @@ class DenysLegoGame {
   }
 
   // ==========================================
-  // 11. ІНТЕРФЕЙС, POPOVER-МЕНЮ ТА СЕНСОРНЕ КЕРУВАННЯ
+  // 11. ІНТЕРФЕЙС ТА ПОДІЇ
   // ==========================================
   setToolMode(mode) {
     this.toolMode = mode;
@@ -1522,12 +1618,8 @@ class DenysLegoGame {
     const moveSub = document.getElementById('move-subbar');
     moveSub.classList.toggle('hidden', mode !== 'move');
 
-    if (mode !== 'move') {
-      this.clearSelection();
-    }
-    if (this.ghostMesh) {
-      this.ghostMesh.visible = mode === 'build';
-    }
+    if (mode !== 'move') this.clearSelection();
+    if (this.ghostMesh) this.ghostMesh.visible = mode === 'build';
   }
 
   initUI() {
@@ -1581,7 +1673,6 @@ class DenysLegoGame {
       document.getElementById('hud').classList.add('hidden');
     });
 
-    // Взаємовиключні спливаючі вікна у верхній панелі (Колір / Камера / Студія)
     const popovers = [
       { btn: 'toggle-colors-btn', pop: 'popover-colors' },
       { btn: 'toggle-camera-btn', pop: 'popover-camera' },
@@ -1611,7 +1702,6 @@ class DenysLegoGame {
       btn.addEventListener('click', closeAllPopovers);
     });
 
-    // Камера 360°
     document.querySelectorAll('.cam-btn').forEach(btn => {
       btn.addEventListener('click', () => this.setCameraView(btn.dataset.view));
     });
@@ -1622,7 +1712,6 @@ class DenysLegoGame {
       orbitBtn.classList.toggle('active', this.autoOrbit);
     });
 
-    // Палітра кольорів
     const paletteEl = document.getElementById('color-palette');
     LEGO_COLORS.forEach((col, i) => {
       const sw = document.createElement('div');
@@ -1640,7 +1729,6 @@ class DenysLegoGame {
       paletteEl.appendChild(sw);
     });
 
-    // Інструменти режимів
     document.getElementById('tool-build').addEventListener('click', () => this.setToolMode('build'));
     document.getElementById('tool-move').addEventListener('click', () => {
       this.setToolMode('move');
@@ -1659,7 +1747,6 @@ class DenysLegoGame {
     };
     document.getElementById('btn-rotate').addEventListener('click', rotateAction);
 
-    // Керування переміщенням (Весь об'єкт vs Деталь, Стрілки, Копія)
     const scopeBtn = document.getElementById('btn-move-scope');
     scopeBtn.addEventListener('click', () => {
       this.moveWholeGroup = !this.moveWholeGroup;
@@ -1683,7 +1770,6 @@ class DenysLegoGame {
       this.showToast('Позицію зафіксовано!');
     });
 
-    // Undo / Clear / Save / Load / Lighting / Explode / Photo
     document.getElementById('btn-undo').addEventListener('click', () => {
       if (this.placedBricks.length > 0) this.removeBrick(this.placedBricks[this.placedBricks.length - 1]);
     });
@@ -1744,7 +1830,6 @@ class DenysLegoGame {
       reader.readAsText(file);
     });
 
-    // Категорії нижнього банера та динамічні підфільтри
     document.querySelectorAll('.cat-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
@@ -1760,9 +1845,7 @@ class DenysLegoGame {
 
     document.getElementById('btn-spawn-center').addEventListener('click', () => {
       if (this.selectedPart.items) {
-        // Знаходимо вільніше зміщення навколо центру, щоб пресети не накладалися
-        const spread = (this.placedBricks.length % 7 - 3) * 3;
-        this.spawnPresetOnBoard(this.selectedPart, spread, spread, true);
+        this.spawnPresetOnBoard(this.selectedPart, null, null, true);
       } else {
         const { x, y, z } = this.snapCoordinates(0, 0, this.selectedPart, this.currentRotation);
         this.placeBrick(this.selectedPart, this.selectedColor, x, y, z, this.currentRotation, true);
@@ -1783,7 +1866,6 @@ class DenysLegoGame {
       if (e.code === 'ArrowRight') this.moveSelectedBy(1, 0);
     });
 
-    // Сенсорне та мишаче керування (перетягування об'єктів + клік + 360° камера)
     const canvas = this.renderer.domElement;
     let downX = 0;
     let downY = 0;
@@ -1799,12 +1881,11 @@ class DenysLegoGame {
         const hit = this.getRaycastHit(e);
         const hitRec = hit ? this.findRecordFromObject(hit.object) : null;
         if (hitRec) {
-          // Якщо клікнули на вже вибраний об'єкт або новий — починаємо перетягування!
           if (!this.selectedBricks.includes(hitRec)) {
             this.selectBrickOrGroup(hitRec);
           }
           this.isDraggingSelection = true;
-          this.controls.enabled = false; // Блокуємо камеру поки тягнемо будинок/машину!
+          this.controls.enabled = false;
           this.dragPlane.constant = -hit.point.y;
           this.dragAnchorPoint.copy(hit.point);
           return;
@@ -1992,9 +2073,7 @@ class DenysLegoGame {
       card.addEventListener('click', () => {
         this.selectedPart = item;
         if (item.items) {
-          // Якщо це Машина, Будинок або Набір — одразу спавнимо на поле і вмикаємо режим вільного пересування!
-          const spread = ((this.placedBricks.length % 5) - 2) * 3;
-          this.spawnPresetOnBoard(item, spread, spread, true);
+          this.spawnPresetOnBoard(item, null, null, true);
         } else {
           this.setToolMode('build');
           this.createGhostMesh();
